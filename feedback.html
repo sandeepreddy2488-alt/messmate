@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Rating & Feedback - MessMate</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .feedback-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2rem;
+    }
+    .rating-category-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .tags-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .tag-choice {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.825rem;
+      cursor: pointer;
+      user-select: none;
+      transition: var(--transition);
+    }
+    .tag-choice input {
+      display: none;
+    }
+    .tag-choice:has(input:checked) {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+      color: var(--primary-dark);
+      font-weight: 600;
+    }
+    .review-bubble {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .admin-reply-box {
+      background: var(--bg-main);
+      border-left: 3px solid var(--primary);
+      padding: 0.65rem 0.85rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.825rem;
+      margin-top: 0.75rem;
+    }
+    @media (max-width: 900px) {
+      .feedback-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-utensils"></i>
+        <span>MessMate</span>
+      </a>
+
+      <button class="menu-toggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="today-menu.html" class="nav-link"><i class="fa-solid fa-calendar-day"></i> Today's Menu</a></li>
+        <li><a href="weekly-menu.html" class="nav-link"><i class="fa-solid fa-calendar-week"></i> Weekly Menu</a></li>
+        <li><a href="feedback.html" class="nav-link active"><i class="fa-solid fa-star"></i> Ratings</a></li>
+        <li><a href="complaints.html" class="nav-link"><i class="fa-solid fa-circle-exclamation"></i> Complaints</a></li>
+        <li><a href="announcements.html" class="nav-link"><i class="fa-solid fa-bullhorn"></i> Notices</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="dashboard.html" class="btn btn-outline btn-sm">
+          <i class="fa-solid fa-gauge"></i> My Dashboard
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container page-header-content">
+      <div>
+        <div class="breadcrumb">
+          <a href="index.html">Home</a>
+          <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+          <span>Food Rating & Feedback</span>
+        </div>
+        <h1>Daily Meal Rating & Feedback</h1>
+        <p class="lead" style="margin: 0;">Your ratings directly shape the mess menu and holding catering contractors accountable.</p>
+      </div>
+
+      <div class="user-pill">
+        <div class="user-avatar">RS</div>
+        <span>Rahul S. (Block B)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+
+      <div class="feedback-grid">
+
+        <!-- Form Column -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-pen-to-square" style="color: var(--primary);"></i>
+                Submit Meal Feedback
+              </div>
+              <span class="badge badge-primary">Sunday, Sept 20</span>
+            </div>
+
+            <form id="feedback-form">
+              <!-- Select Meal -->
+              <div class="form-group">
+                <label class="form-label">Which meal are you reviewing?</label>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
+                  <label class="tag-choice" style="justify-content: center; padding: 0.6rem 0.25rem;">
+                    <input type="radio" name="meal-reviewed" value="breakfast">
+                    <span>Breakfast</span>
+                  </label>
+                  <label class="tag-choice" style="justify-content: center; padding: 0.6rem 0.25rem;">
+                    <input type="radio" name="meal-reviewed" value="lunch" checked>
+                    <span>Lunch</span>
+                  </label>
+                  <label class="tag-choice" style="justify-content: center; padding: 0.6rem 0.25rem;">
+                    <input type="radio" name="meal-reviewed" value="snacks">
+                    <span>Snacks</span>
+                  </label>
+                  <label class="tag-choice" style="justify-content: center; padding: 0.6rem 0.25rem;">
+                    <input type="radio" name="meal-reviewed" value="dinner">
+                    <span>Dinner</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Overall Star Rating -->
+              <div class="form-group" style="background: var(--bg-main); padding: 1.25rem; border-radius: var(--radius-md); text-align: center;">
+                <label class="form-label" style="font-size: 1rem; margin-bottom: 0.5rem;">Overall Meal Experience</label>
+                <div class="star-rating" data-rating="4" style="font-size: 2.2rem; justify-content: center;">
+                  <i class="fa-solid fa-star active"></i>
+                  <i class="fa-solid fa-star active"></i>
+                  <i class="fa-solid fa-star active"></i>
+                  <i class="fa-solid fa-star active"></i>
+                  <i class="fa-solid fa-star"></i>
+                </div>
+                <div class="rating-label" style="font-size: 0.85rem; color: var(--primary); font-weight: 700; margin-top: 0.4rem;">
+                  4/5 (Very Good)
+                </div>
+              </div>
+
+              <!-- Specific Metric Ratings -->
+              <div style="margin-bottom: 1.5rem;">
+                <label class="form-label">Rate Specific Aspects</label>
+
+                <div class="rating-category-row">
+                  <div>
+                    <div style="font-weight: 600; font-size: 0.9rem;">Taste & Flavor</div>
+                    <div style="font-size: 0.78rem; color: var(--text-muted);">Spices, seasoning & cooking quality</div>
+                  </div>
+                  <div class="star-rating" data-rating="4" style="font-size: 1.15rem;">
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star"></i>
+                  </div>
+                </div>
+
+                <div class="rating-category-row">
+                  <div>
+                    <div style="font-weight: 600; font-size: 0.9rem;">Hygiene & Cleanliness</div>
+                    <div style="font-size: 0.78rem; color: var(--text-muted);">Counter hygiene & clean cutlery</div>
+                  </div>
+                  <div class="star-rating" data-rating="5" style="font-size: 1.15rem;">
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star active"></i>
+                  </div>
+                </div>
+
+                <div class="rating-category-row">
+                  <div>
+                    <div style="font-weight: 600; font-size: 0.9rem;">Serving Temperature</div>
+                    <div style="font-size: 0.78rem; color: var(--text-muted);">Warm rotis, hot dal & chilled salads</div>
+                  </div>
+                  <div class="star-rating" data-rating="3" style="font-size: 1.15rem;">
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                  </div>
+                </div>
+
+                <div class="rating-category-row" style="border-bottom: none;">
+                  <div>
+                    <div style="font-weight: 600; font-size: 0.9rem;">Portion & Refill Speed</div>
+                    <div style="font-size: 0.78rem; color: var(--text-muted);">Availability of prompt second helpings</div>
+                  </div>
+                  <div class="star-rating" data-rating="4" style="font-size: 1.15rem;">
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star active"></i>
+                    <i class="fa-solid fa-star"></i>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Feedback Tags -->
+              <div class="form-group">
+                <label class="form-label">Quick Tags (Select all that match)</label>
+                <div class="tags-cloud">
+                  <label class="tag-choice">
+                    <input type="checkbox" checked>
+                    <span>😋 Delicious Gravy</span>
+                  </label>
+                  <label class="tag-choice">
+                    <input type="checkbox" checked>
+                    <span>🫓 Soft Hot Phulkas</span>
+                  </label>
+                  <label class="tag-choice">
+                    <input type="checkbox">
+                    <span>🧂 Needs More Salt</span>
+                  </label>
+                  <label class="tag-choice">
+                    <input type="checkbox">
+                    <span>🌶️ Too Spicy</span>
+                  </label>
+                  <label class="tag-choice">
+                    <input type="checkbox">
+                    <span>⏳ Counter Queue Delay</span>
+                  </label>
+                  <label class="tag-choice">
+                    <input type="checkbox" checked>
+                    <span>🍨 Gulab Jamun was great</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Comments Box -->
+              <div class="form-group">
+                <label class="form-label" for="feedback-comment">Detailed Comments / Suggestions (Optional)</label>
+                <textarea id="feedback-comment" class="form-control" rows="3" placeholder="Share anything the kitchen crew did well or needs to improve..."></textarea>
+              </div>
+
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; cursor: pointer;">
+                  <input type="checkbox" checked> Submit anonymously to Mess Committee
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block btn-lg">
+                <i class="fa-solid fa-paper-plane"></i> Submit Meal Feedback
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Community Pulse & Recent Ratings Column -->
+        <div>
+          <!-- Summary Scorecard -->
+          <div class="card" style="margin-bottom: 1.75rem;">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-chart-simple" style="color: var(--primary);"></i>
+                Mess Quality Pulse
+              </div>
+              <span class="badge badge-primary">This Week</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.25rem;">
+              <div>
+                <div id="dynamic-avg-score" style="font-size: 3rem; font-weight: 800; color: var(--text-dark); line-height: 1;">4.3</div>
+                <div style="color: var(--accent); font-size: 0.95rem; margin-top: 0.25rem;">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                </div>
+                <div id="dynamic-total-votes" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">Live data from SQLite Database</div>
+              </div>
+
+              <div style="flex: 1; font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.35rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span>5★</span>
+                  <div style="flex: 1; height: 8px; background: var(--bg-subtle); border-radius: 4px; overflow: hidden;">
+                    <div style="width: 68%; height: 100%; background: #10b981;"></div>
+                  </div>
+                  <span>68%</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span>4★</span>
+                  <div style="flex: 1; height: 8px; background: var(--bg-subtle); border-radius: 4px; overflow: hidden;">
+                    <div style="width: 20%; height: 100%; background: #3b82f6;"></div>
+                  </div>
+                  <span>20%</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span>3★</span>
+                  <div style="flex: 1; height: 8px; background: var(--bg-subtle); border-radius: 4px; overflow: hidden;">
+                    <div style="width: 8%; height: 100%; background: #f59e0b;"></div>
+                  </div>
+                  <span>8%</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span>1-2★</span>
+                  <div style="flex: 1; height: 8px; background: var(--bg-subtle); border-radius: 4px; overflow: hidden;">
+                    <div style="width: 4%; height: 100%; background: #ef4444;"></div>
+                  </div>
+                  <span>4%</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: var(--bg-main); padding: 0.75rem; border-radius: var(--radius-md); font-size: 0.8rem; color: var(--text-muted);">
+              <i class="fa-solid fa-award" style="color: var(--accent);"></i>
+              <strong>Highest Rated Meal:</strong> Wednesday Biryani & Salan (4.8 ★)
+            </div>
+          </div>
+
+          <!-- Recent Reviews Feed -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-comments" style="color: var(--primary);"></i>
+                Recent Resident Reviews
+              </div>
+            </div>
+
+            <div id="dynamic-reviews-list">
+            <div class="review-bubble">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                <span style="font-weight: 700; font-size: 0.85rem; color: var(--text-dark);">
+                  <i class="fa-solid fa-user-astronaut" style="color: var(--primary);"></i> 3rd Year B.Tech (Block B)
+                </span>
+                <span style="color: var(--accent); font-size: 0.8rem;">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+              </div>
+              <p style="font-size: 0.85rem; margin-bottom: 0.25rem;">
+                "Paneer butter masala today was really rich and not overly oily. Rotis were served piping hot from the tawa!"
+              </p>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Today • Lunch Review</div>
+            </div>
+
+            <div class="review-bubble">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                <span style="font-weight: 700; font-size: 0.85rem; color: var(--text-dark);">
+                  <i class="fa-solid fa-user-graduate" style="color: #3b82f6;"></i> M.Tech Resident (Block A)
+                </span>
+                <span style="color: var(--accent); font-size: 0.8rem;">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                </span>
+              </div>
+              <p style="font-size: 0.85rem; margin-bottom: 0.25rem;">
+                "The evening tea sugar level was high yesterday. Can we have separate sugar sachets or lower base sweetness?"
+              </p>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Yesterday • Snacks Review</div>
+
+              <div class="admin-reply-box">
+                <strong><i class="fa-solid fa-reply"></i> Mess Supervisor:</strong>
+                Noted! We have instructed the team to keep a no-sugar milk tea pot alongside the regular brew starting today.
+              </div>
+            </div>
+
+            <div class="review-bubble" style="margin-bottom: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                <span style="font-weight: 700; font-size: 0.85rem; color: var(--text-dark);">
+                  <i class="fa-solid fa-user" style="color: #ec4899;"></i> 2nd Year MBBS (Wing C)
+                </span>
+                <span style="color: var(--accent); font-size: 0.8rem;">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+              </div>
+              <p style="font-size: 0.85rem; margin-bottom: 0.25rem;">
+                "Poha was fresh and light this morning. The peanuts were crunchy. Good job kitchen staff!"
+              </p>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Today • Breakfast Review</div>
+            </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border: none; padding-top: 0;">
+        <div>&copy; 2026 MessMate - Feedback and quality audits overseen by Student Mess Representatives.</div>
+        <div><a href="complaints.html" style="color: var(--primary-light);">Have an urgent grievance? Report here &rarr;</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+node_modules/
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+dist/
+
+backend/db.sqlite3
+database/messmate.db

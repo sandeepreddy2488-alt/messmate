@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Today's Mess Menu - MessMate</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .menu-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.75rem;
+    }
+    .meal-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      position: relative;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .meal-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .meal-card.active-meal {
+      border: 2px solid var(--primary);
+      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.12);
+    }
+    .meal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .meal-type {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .meal-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+    }
+    .items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+    .menu-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-main);
+    }
+    .menu-item-name {
+      font-weight: 600;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.925rem;
+    }
+    .nutrition-bar {
+      background: var(--bg-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 1.25rem;
+      text-align: center;
+    }
+    .nutrition-val {
+      font-weight: 700;
+      color: var(--text-dark);
+      font-size: 0.95rem;
+      display: block;
+    }
+    @media (max-width: 900px) {
+      .menu-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-utensils"></i>
+        <span>MessMate</span>
+      </a>
+
+      <button class="menu-toggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="today-menu.html" class="nav-link active"><i class="fa-solid fa-calendar-day"></i> Today's Menu</a></li>
+        <li><a href="weekly-menu.html" class="nav-link"><i class="fa-solid fa-calendar-week"></i> Weekly Menu</a></li>
+        <li><a href="feedback.html" class="nav-link"><i class="fa-solid fa-star"></i> Ratings</a></li>
+        <li><a href="complaints.html" class="nav-link"><i class="fa-solid fa-circle-exclamation"></i> Complaints</a></li>
+        <li><a href="announcements.html" class="nav-link"><i class="fa-solid fa-bullhorn"></i> Notices</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="dashboard.html" class="btn btn-outline btn-sm">
+          <i class="fa-solid fa-gauge"></i> My Dashboard
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container page-header-content">
+      <div>
+        <div class="breadcrumb">
+          <a href="index.html">Home</a>
+          <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+          <span>Today's Menu</span>
+        </div>
+        <h1>Today's Mess Menu</h1>
+        <p class="lead" style="margin: 0;">Sunday, September 20, 2026 • Central Mess Hall #2</p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <a href="weekly-menu.html" class="btn btn-outline">
+          <i class="fa-solid fa-calendar-days"></i> View Weekly Schedule
+        </a>
+        <a href="feedback.html" class="btn btn-primary">
+          <i class="fa-solid fa-star"></i> Rate Today's Food
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+
+      <!-- Live Notice -->
+      <div class="banner-notice">
+        <div class="banner-notice-content">
+          <i class="fa-solid fa-fire-burner"></i>
+          <div>
+            <strong>Live Serving:</strong> Lunch service is ongoing right now in Mess Halls A & B until 02:30 PM.
+          </div>
+        </div>
+        <span class="badge badge-live">Dining Open</span>
+      </div>
+
+      <!-- 4 Meals Grid -->
+      <div class="menu-cards-grid">
+
+        <!-- 1. Breakfast Card -->
+        <div class="meal-card">
+          <div class="meal-header">
+            <div class="meal-type">
+              <div class="meal-icon" style="background: var(--accent-soft); color: var(--accent);">
+                <i class="fa-solid fa-mug-saucer"></i>
+              </div>
+              <div>
+                <h3 style="margin: 0;">Breakfast</h3>
+                <div style="font-size: 0.825rem; color: var(--text-muted);">
+                  <i class="fa-regular fa-clock"></i> 07:30 AM – 09:30 AM
+                </div>
+              </div>
+            </div>
+            <span class="status-badge status-resolved">Served (Closed)</span>
+          </div>
+
+          <div class="items-list">
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Steamed Idli & Medu Vada
+              </span>
+              <span class="badge badge-veg">Veg</span>
+            </div>
+
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Vegetable Sambar & Coconut Chutney
+              </span>
+              <span class="badge badge-veg">Veg</span>
+            </div>
+
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Indori Poha with Roasted Peanuts
+              </span>
+              <span class="badge badge-veg">Veg</span>
+            </div>
+
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #b91c1c; font-size: 0.55rem;"></i>
+                Boiled Eggs (2 pcs) / Fresh Banana
+              </span>
+              <span class="badge badge-special">Egg / Fruit</span>
+            </div>
+
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Hot Filter Coffee & Masala Tea
+              </span>
+              <span class="badge badge-veg">Beverage</span>
+            </div>
+          </div>
+
+          <div class="nutrition-bar">
+            <div><span class="nutrition-val">490 kcal</span>Calories</div>
+            <div><span class="nutrition-val">18 g</span>Protein</div>
+            <div><span class="nutrition-val">68 g</span>Carbs</div>
+            <div><span class="nutrition-val">12 g</span>Fats</div>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; margin-top: auto;">
+            <a href="feedback.html" class="btn btn-outline btn-sm btn-block">
+              <i class="fa-regular fa-star"></i> Rate Breakfast
+            </a>
+          </div>
+        </div>
+
+        <!-- 2. Lunch Card (Live) -->
+        <div class="meal-card active-meal">
+          <div class="meal-header">
+            <div class="meal-type">
+              <div class="meal-icon" style="background: var(--primary-soft); color: var(--primary);">
+                <i class="fa-solid fa-bowl-rice"></i>
+              </div>
+              <div>
+                <h3 style="margin: 0; color: var(--primary);">Lunch (Chef's Special)</h3>
+                <div style="font-size: 0.825rem; color: var(--text-muted);">
+                  <i class="fa-regular fa-clock"></i> 12:30 PM – 02:30 PM
+                </div>
+              </div>
+            </div>
+            <span class="badge badge-live">Serving Now</span>
+          </div>
+
+          <div class="items-list">
+            <div class="menu-item-row" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-crown" style="color: var(--accent); font-size: 0.85rem;"></i>
+                Shahi Paneer Butter Masala
+              </span>
+              <span class="badge badge-special">Special</span>
+            </div>
+
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Dal Tadka (Double Fried Jeera & Garlic)
+              </span>
+              <span class="badge badge-veg">High Protein</span>
+            </div>
+
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Jeera Rice & Soft Ghee Phulkas (Unlimited)
+              </span>
+              <span class="badge badge-veg">Staple</span>
+            </div>
+
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Fresh Dahi (Curd), Mixed Pickle & Papad
+              </span>
+              <span class="badge badge-veg">Side</span>
+            </div>
+
+            <div class="menu-item-row" style="background: #fffbeb;">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-cake-candles" style="color: #d97706; font-size: 0.85rem;"></i>
+                Warm Gulab Jamun (2 pcs)
+              </span>
+              <span class="badge badge-special">Dessert</span>
+            </div>
+          </div>
+
+          <div class="nutrition-bar">
+            <div><span class="nutrition-val">740 kcal</span>Calories</div>
+            <div><span class="nutrition-val">26 g</span>Protein</div>
+            <div><span class="nutrition-val">94 g</span>Carbs</div>
+            <div><span class="nutrition-val">22 g</span>Fats</div>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; margin-top: auto;">
+            <a href="feedback.html" class="btn btn-primary btn-sm btn-block">
+              <i class="fa-solid fa-star"></i> Rate This Lunch
+            </a>
+            <a href="complaints.html" class="btn btn-outline btn-sm" title="Report shortage or food issue">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- 3. Evening Snacks Card -->
+        <div class="meal-card">
+          <div class="meal-header">
+            <div class="meal-type">
+              <div class="meal-icon" style="background: #fdf2f8; color: #db2777;">
+                <i class="fa-solid fa-cookie-bite"></i>
+              </div>
+              <div>
+                <h3 style="margin: 0;">Evening Snacks</h3>
+                <div style="font-size: 0.825rem; color: var(--text-muted);">
+                  <i class="fa-regular fa-clock"></i> 05:00 PM – 06:00 PM
+                </div>
+              </div>
+            </div>
+            <span class="status-badge status-in-progress">Upcoming</span>
+          </div>
+
+          <div class="items-list">
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Crispy Potato-Peas Samosa (2 pcs)
+              </span>
+              <span class="badge badge-veg">Snack</span>
+            </div>
+
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Spicy Mint Chutney & Sweet Saunth
+              </span>
+              <span class="badge badge-veg">Condiment</span>
+            </div>
+
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Ginger Cardamom Tea / Hot Black Coffee
+              </span>
+              <span class="badge badge-veg">Beverage</span>
+            </div>
+
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Digestive Biscuits / Rusks
+              </span>
+              <span class="badge badge-veg">Optional</span>
+            </div>
+          </div>
+
+          <div class="nutrition-bar">
+            <div><span class="nutrition-val">310 kcal</span>Calories</div>
+            <div><span class="nutrition-val">6 g</span>Protein</div>
+            <div><span class="nutrition-val">42 g</span>Carbs</div>
+            <div><span class="nutrition-val">14 g</span>Fats</div>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; margin-top: auto;">
+            <button class="btn btn-outline btn-sm btn-block" disabled style="opacity: 0.6;">
+              Rating Opens at 5:00 PM
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. Dinner Card -->
+        <div class="meal-card">
+          <div class="meal-header">
+            <div class="meal-type">
+              <div class="meal-icon" style="background: #eff6ff; color: #2563eb;">
+                <i class="fa-solid fa-utensils"></i>
+              </div>
+              <div>
+                <h3 style="margin: 0;">Dinner</h3>
+                <div style="font-size: 0.825rem; color: var(--text-muted);">
+                  <i class="fa-regular fa-clock"></i> 07:30 PM – 09:30 PM
+                </div>
+              </div>
+            </div>
+            <span class="status-badge status-in-progress">Upcoming</span>
+          </div>
+
+          <div class="items-list">
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Homestyle Mixed Vegetable Korma
+              </span>
+              <span class="badge badge-veg">Veg</span>
+            </div>
+
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Yellow Moong Dal with Hing Tadka
+              </span>
+              <span class="badge badge-veg">Light & Healthy</span>
+            </div>
+
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Fresh Tawa Chapati & Steamed Rice
+              </span>
+              <span class="badge badge-veg">Unlimited</span>
+            </div>
+
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-circle" style="color: #15803d; font-size: 0.55rem;"></i>
+                Spiced Boondi Raita & Mixed Pickle
+              </span>
+              <span class="badge badge-veg">Probiotic</span>
+            </div>
+
+            <div class="menu-item-row">
+              <span class="menu-item-name">
+                <i class="fa-solid fa-apple-whole" style="color: #10b981; font-size: 0.85rem;"></i>
+                Chilled Cut Watermelon Slices
+              </span>
+              <span class="badge badge-veg">Fruit</span>
+            </div>
+          </div>
+
+          <div class="nutrition-bar">
+            <div><span class="nutrition-val">580 kcal</span>Calories</div>
+            <div><span class="nutrition-val">21 g</span>Protein</div>
+            <div><span class="nutrition-val">76 g</span>Carbs</div>
+            <div><span class="nutrition-val">15 g</span>Fats</div>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; margin-top: auto;">
+            <button class="btn btn-outline btn-sm btn-block" disabled style="opacity: 0.6;">
+              Rating Opens at 7:30 PM
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Kitchen Hygiene & Safety Note -->
+      <div class="card" style="margin-top: 2.5rem; background: #ffffff;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 48px; height: 48px; background: var(--primary-soft); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+              <i class="fa-solid fa-shield-virus"></i>
+            </div>
+            <div>
+              <h4 style="margin: 0 0 0.2rem 0;">Kitchen Hygiene & Food Quality Standards</h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+                All ingredients sourced daily from verified vendors. RO Purified water used for all cooking and dining halls.
+              </p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <span class="badge" style="background: var(--bg-subtle); color: var(--text-dark);">Inspection Passed: 10:00 AM Today</span>
+            <span class="badge badge-veg"><i class="fa-solid fa-check"></i> Cleanliness Grade A</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border: none; padding-top: 0;">
+        <div>&copy; 2026 MessMate - College Hostel Dining System.</div>
+        <div><a href="weekly-menu.html" style="color: var(--primary-light);">View 7-Day Schedule &rarr;</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

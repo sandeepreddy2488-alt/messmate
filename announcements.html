@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notices & Announcements - MessMate</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .notices-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .notice-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      transition: var(--transition);
+    }
+    .notice-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: #cbd5e1;
+    }
+    .notice-card.pinned {
+      border: 2px solid var(--primary);
+      background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+    }
+    .notice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .notice-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .filter-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-utensils"></i>
+        <span>MessMate</span>
+      </a>
+
+      <button class="menu-toggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="today-menu.html" class="nav-link"><i class="fa-solid fa-calendar-day"></i> Today's Menu</a></li>
+        <li><a href="weekly-menu.html" class="nav-link"><i class="fa-solid fa-calendar-week"></i> Weekly Menu</a></li>
+        <li><a href="feedback.html" class="nav-link"><i class="fa-solid fa-star"></i> Ratings</a></li>
+        <li><a href="complaints.html" class="nav-link"><i class="fa-solid fa-circle-exclamation"></i> Complaints</a></li>
+        <li><a href="announcements.html" class="nav-link active"><i class="fa-solid fa-bullhorn"></i> Notices</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="dashboard.html" class="btn btn-outline btn-sm">
+          <i class="fa-solid fa-gauge"></i> My Dashboard
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container page-header-content">
+      <div>
+        <div class="breadcrumb">
+          <a href="index.html">Home</a>
+          <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+          <span>Notices & Announcements</span>
+        </div>
+        <h1>Mess Notice Board</h1>
+        <p class="lead" style="margin: 0;">Official circulars, festival feast notifications, rebate rules, and catering announcements.</p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <a href="admin-dashboard.html" class="btn btn-outline-primary btn-sm">
+          <i class="fa-solid fa-plus"></i> Post Notice (Admin)
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+
+      <!-- Category Filter Bar -->
+      <div class="filter-bar">
+        <button class="btn btn-primary btn-sm filter-btn" data-filter="all">All Notices</button>
+        <button class="btn btn-outline btn-sm filter-btn" data-filter="events">Feasts & Events</button>
+        <button class="btn btn-outline btn-sm filter-btn" data-filter="menu">Menu Updates</button>
+        <button class="btn btn-outline btn-sm filter-btn" data-filter="rebate">Rebate & Leave</button>
+        <button class="btn btn-outline btn-sm filter-btn" data-filter="rules">Hostel Rules</button>
+      </div>
+
+      <!-- Notices List -->
+      <div class="notices-container" id="dynamic-notices-list">
+
+        <!-- 1. Pinned Notice: Special Feast -->
+        <div class="notice-card pinned filterable-item" data-category="events">
+          <div class="notice-header">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <span class="badge" style="background: #059669; color: #ffffff;">
+                <i class="fa-solid fa-thumbtack"></i> Pinned Announcement
+              </span>
+              <span class="badge badge-special">Grand Feast</span>
+            </div>
+            <div class="notice-meta">
+              <span><i class="fa-regular fa-calendar"></i> Posted: Sept 20, 2026</span>
+              <span><i class="fa-solid fa-user-tie"></i> Mess Secretary</span>
+            </div>
+          </div>
+
+          <h2 style="font-size: 1.35rem; margin-bottom: 0.5rem; color: var(--text-dark);">
+            🎉 Grand Annual Fest Feast & Special Dinner — Coming this Sunday!
+          </h2>
+
+          <p style="font-size: 0.925rem; color: var(--text-body); line-height: 1.6; margin-bottom: 1rem;">
+            On the joyous occasion of the Annual Inter-College Technical & Cultural Fest, Central Mess Halls 1 & 2 will host a Grand Banquet Dinner on Sunday, September 27. Serving timings will be extended from <strong>7:00 PM to 10:30 PM</strong>.
+          </p>
+
+          <div style="background: #ffffff; padding: 1rem; border-radius: var(--radius-md); border: 1px solid #bbf7d0; margin-bottom: 1rem;">
+            <div style="font-weight: 700; color: #166534; font-size: 0.9rem; margin-bottom: 0.4rem;">
+              <i class="fa-solid fa-utensils"></i> Special Feast Menu:
+            </div>
+            <div style="font-size: 0.875rem; color: var(--text-body); line-height: 1.6;">
+              • Starters: Paneer Tikka / Crispy Chicken Kebab with Mint Dip<br>
+              • Main: Hyderabadi Dum Biryani, Shahi Paneer, Dal Makhani, Garlic Butter Naan & Steamed Rice<br>
+              • Desserts: Hot Malpua with Rabdi & Chilled Kesar Pista Ice Cream
+            </div>
+          </div>
+
+          <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
+            <span>Hostel residents may bring registered college guests by acquiring a guest coupon from the warden counter.</span>
+            <span style="font-weight: 600; color: var(--primary);">Signed by Chief Warden</span>
+          </div>
+        </div>
+
+        <!-- 2. Rebate Application Notice -->
+        <div class="notice-card filterable-item" data-category="rebate">
+          <div class="notice-header">
+            <span class="badge badge-primary">Rebate Window</span>
+            <div class="notice-meta">
+              <span><i class="fa-regular fa-calendar"></i> Posted: Sept 18, 2026</span>
+              <span><i class="fa-solid fa-building-columns"></i> Hostel Office</span>
+            </div>
+          </div>
+
+          <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">
+            Mess Rebate Applications Open for Mid-Semester Break
+          </h3>
+
+          <p style="font-size: 0.9rem; color: var(--text-body); line-height: 1.6; margin-bottom: 0.75rem;">
+            Students leaving campus for the upcoming vacation are requested to apply for their mess fee rebate in advance.
+            Under hostel rules, students absent for <strong>minimum 3 consecutive days</strong> are entitled to 80% daily meal rebate.
+          </p>
+
+          <ul style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.8; margin-left: 1.25rem; list-style: disc; margin-bottom: 1rem;">
+            <li>Last date to submit leave slip: <strong>September 24, 2026 (5:00 PM)</strong>.</li>
+            <li>Submit online or drop approved gate pass at Hostel Office Room 104.</li>
+            <li>Rebate adjustments will reflect in next month's hostel dues statement.</li>
+          </ul>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline-primary btn-sm" onclick="showToast('Rebate Portal', 'Please collect the signed leave rebate form from Block B office.', 'info');">
+              <i class="fa-solid fa-download"></i> Download Rebate Form PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Menu Change Notice -->
+        <div class="notice-card filterable-item" data-category="menu">
+          <div class="notice-header">
+            <span class="badge badge-veg">Menu Feedback Result</span>
+            <div class="notice-meta">
+              <span><i class="fa-regular fa-calendar"></i> Posted: Sept 16, 2026</span>
+              <span><i class="fa-solid fa-utensils"></i> Mess Committee</span>
+            </div>
+          </div>
+
+          <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">
+            Tea Station Revisions: Separate Sugar-Free Pot & Herbal Green Tea Added
+          </h3>
+
+          <p style="font-size: 0.9rem; color: var(--text-body); line-height: 1.6; margin-bottom: 0.5rem;">
+            In response to feedback submitted via MessMate regarding excessive sweetness in morning tea, the caterer has installed separate dispensers:
+          </p>
+
+          <div style="font-size: 0.85rem; color: var(--text-body); line-height: 1.6;">
+            1. <strong>Pot A:</strong> Classic Spiced Masala Milk Tea (Pre-sweetened)<br>
+            2. <strong>Pot B:</strong> No-Sugar Milk Tea with sugar cubes & jaggery powder placed aside<br>
+            3. <strong>Pot C:</strong> Hot Water Dispenser with Green Tea & Lemon Herbal bags
+          </div>
+        </div>
+
+        <!-- 4. Hostel Rules Notice -->
+        <div class="notice-card filterable-item" data-category="rules">
+          <div class="notice-header">
+            <span class="badge badge-nonveg">Hostel Regulation</span>
+            <div class="notice-meta">
+              <span><i class="fa-regular fa-calendar"></i> Posted: Sept 12, 2026</span>
+              <span><i class="fa-solid fa-user-shield"></i> Chief Warden</span>
+            </div>
+          </div>
+
+          <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">
+            Prohibition: Removal of Mess Utensils to Hostel Rooms
+          </h3>
+
+          <p style="font-size: 0.9rem; color: var(--text-body); line-height: 1.6; margin-bottom: 0.5rem;">
+            Over 200 stainless steel plates, bowls, and spoons were found abandoned in floor corridors this week. Please be reminded that removing mess utensils outside the dining halls is strictly against hostel disciplinary codes.
+          </p>
+
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+            Students unwell in their rooms may request sick-diet room delivery by registering with the hostel doctor or resident caretaker.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border: none; padding-top: 0;">
+        <div>&copy; 2026 MessMate - Campus Mess Notice Board. Contact Hostel Office for circulars.</div>
+        <div><a href="index.html" style="color: var(--primary-light);">Back to Home &rarr;</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

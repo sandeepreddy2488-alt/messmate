@@ -1,0 +1,16 @@
+{
+  "name": "mess-mate",
+  "version": "1.0.0",
+  "description": "College and hostel mess management web application with Node.js and SQLite",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["mess-management", "college", "hostel", "express", "sqlite"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

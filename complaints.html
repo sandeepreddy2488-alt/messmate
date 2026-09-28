@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complaints & Grievances - MessMate</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .complaint-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .ticket-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+      transition: var(--transition);
+    }
+    .ticket-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: #cbd5e1;
+    }
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.65rem;
+    }
+    .ticket-id {
+      font-weight: 700;
+      color: var(--text-dark);
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .resolution-note {
+      background: #f0fdf4;
+      border-left: 3px solid #10b981;
+      padding: 0.65rem 0.85rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.825rem;
+      margin-top: 0.75rem;
+      color: #166534;
+    }
+    .in-progress-note {
+      background: #fffbeb;
+      border-left: 3px solid #f59e0b;
+      padding: 0.65rem 0.85rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.825rem;
+      margin-top: 0.75rem;
+      color: #92400e;
+    }
+    @media (max-width: 900px) {
+      .complaint-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-utensils"></i>
+        <span>MessMate</span>
+      </a>
+
+      <button class="menu-toggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="today-menu.html" class="nav-link"><i class="fa-solid fa-calendar-day"></i> Today's Menu</a></li>
+        <li><a href="weekly-menu.html" class="nav-link"><i class="fa-solid fa-calendar-week"></i> Weekly Menu</a></li>
+        <li><a href="feedback.html" class="nav-link"><i class="fa-solid fa-star"></i> Ratings</a></li>
+        <li><a href="complaints.html" class="nav-link active"><i class="fa-solid fa-circle-exclamation"></i> Complaints</a></li>
+        <li><a href="announcements.html" class="nav-link"><i class="fa-solid fa-bullhorn"></i> Notices</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="dashboard.html" class="btn btn-outline btn-sm">
+          <i class="fa-solid fa-gauge"></i> My Dashboard
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container page-header-content">
+      <div>
+        <div class="breadcrumb">
+          <a href="index.html">Home</a>
+          <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+          <span>Complaints & Grievances</span>
+        </div>
+        <h1>Grievance Redressal Portal</h1>
+        <p class="lead" style="margin: 0;">Submit complaints regarding food quality, hygiene violations, or service shortages with tracking.</p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <span class="badge badge-veg" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+          <i class="fa-solid fa-clock-rotate-left"></i> 24-Hour SLA Commitment
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+
+      <div class="complaint-grid">
+
+        <!-- Lodge Grievance Form -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-file-circle-exclamation" style="color: var(--danger);"></i>
+                Lodge a Formal Complaint
+              </div>
+              <span class="badge badge-primary">Confidential</span>
+            </div>
+
+            <form id="complaint-form">
+              <!-- Category -->
+              <div class="form-group">
+                <label class="form-label" for="complaint-category">Issue Category *</label>
+                <select id="complaint-category" class="form-control" required>
+                  <option value="">-- Choose Category --</option>
+                  <option value="hygiene">Food Hygiene & Cleanliness (Hair/Foreign object)</option>
+                  <option value="quality">Poor Cooking / Stale Food</option>
+                  <option value="water">RO Drinking Water / Dispenser Fault</option>
+                  <option value="shortage">Food Shortage / Counter Refill Delay</option>
+                  <option value="cutlery">Unwashed Plates / Dirty Cutlery</option>
+                  <option value="timing">Mess Timings / Unpunctual Service</option>
+                  <option value="staff">Mess Staff Conduct</option>
+                  <option value="other">Other Campus Mess Issue</option>
+                </select>
+              </div>
+
+              <!-- Meal & Hall -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                  <label class="form-label" for="complaint-meal">Meal Affected</label>
+                  <select id="complaint-meal" class="form-control">
+                    <option value="lunch">Today's Lunch</option>
+                    <option value="breakfast">Today's Breakfast</option>
+                    <option value="snacks">Evening Snacks</option>
+                    <option value="dinner">Yesterday Dinner</option>
+                    <option value="general">General / Ongoing</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="complaint-hall">Mess Hall Location</label>
+                  <select id="complaint-hall" class="form-control">
+                    <option value="hall-2">Central Mess Hall 2 (Block B)</option>
+                    <option value="hall-1">Central Mess Hall 1 (Block A)</option>
+                    <option value="annexe">Girls Hostel Dining Annexe</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Priority -->
+              <div class="form-group">
+                <label class="form-label">Urgency Level</label>
+                <div style="display: flex; gap: 1rem;">
+                  <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.875rem; cursor: pointer;">
+                    <input type="radio" name="priority" value="low"> Normal (24-48h)
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.875rem; cursor: pointer;">
+                    <input type="radio" name="priority" value="medium" checked> Medium (Within 24h)
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.875rem; color: var(--danger); font-weight: 700; cursor: pointer;">
+                    <input type="radio" name="priority" value="urgent"> Urgent (Hygiene Hazard)
+                  </label>
+                </div>
+              </div>
+
+              <!-- Description -->
+              <div class="form-group">
+                <label class="form-label" for="complaint-desc">Detailed Grievance Description *</label>
+                <textarea id="complaint-desc" class="form-control" rows="4" placeholder="Describe the incident in detail (counter number, food item, exact timing, staff present)..." required></textarea>
+              </div>
+
+              <!-- Mock Photo Attachment -->
+              <div class="form-group">
+                <label class="form-label">Attach Photo Proof (Optional)</label>
+                <div style="border: 2px dashed var(--border); padding: 1.25rem; border-radius: var(--radius-md); text-align: center; background: var(--bg-main); cursor: pointer;" onclick="document.getElementById('mock-file-input').click();">
+                  <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.75rem; color: var(--text-muted); margin-bottom: 0.4rem;"></i>
+                  <div style="font-size: 0.85rem; font-weight: 600;">Click to upload image or drop file here</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">Supports JPG, PNG up to 5MB</div>
+                  <input type="file" id="mock-file-input" style="display: none;" onchange="alert('File selected: ' + this.files[0].name);">
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block btn-lg" style="background-color: #dc2626;">
+                <i class="fa-solid fa-bullhorn"></i> Submit Grievance Ticket
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Complaints Tracker Column -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-list-check" style="color: var(--primary);"></i>
+                My Grievance Tickets
+              </div>
+              <span class="status-badge status-resolved">Live from SQLite</span>
+            </div>
+
+            <div id="dynamic-complaints-list">
+            <!-- Ticket 1 -->
+            <div class="ticket-card">
+              <div class="ticket-header">
+                <div class="ticket-id">
+                  <i class="fa-solid fa-ticket" style="color: var(--danger);"></i> #CMP-4921
+                  <span style="font-size: 0.75rem; font-weight: normal; color: var(--text-muted);">• Drinking Water</span>
+                </div>
+                <span class="status-badge status-resolved">
+                  <i class="fa-solid fa-circle-check"></i> Resolved
+                </span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-dark); margin-bottom: 0.25rem;">
+                <strong>Issue:</strong> The RO purifier tap on the second floor of Central Mess Hall 2 had muddy sediment and weak flow.
+              </p>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Filed: Sept 19, 2026, 01:15 PM</div>
+
+              <div class="resolution-note">
+                <strong><i class="fa-solid fa-wrench"></i> Resolution Note by Maintenance Engineer:</strong><br>
+                Pre-filter candle and sediment cartridge replaced on Sept 20, 09:30 AM. TDS tested at 85 ppm (optimal). Tap functioning normally.
+              </div>
+            </div>
+
+            <!-- Ticket 2 -->
+            <div class="ticket-card">
+              <div class="ticket-header">
+                <div class="ticket-id">
+                  <i class="fa-solid fa-ticket" style="color: var(--accent);"></i> #CMP-5014
+                  <span style="font-size: 0.75rem; font-weight: normal; color: var(--text-muted);">• Food Temperature</span>
+                </div>
+                <span class="status-badge status-in-progress">
+                  <i class="fa-solid fa-clock"></i> In Progress
+                </span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-dark); margin-bottom: 0.25rem;">
+                <strong>Issue:</strong> Chapati container was empty at 8:40 PM during dinner, and subsequent rotis brought out were cold.
+              </p>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Filed: Sept 18, 2026, 09:05 PM</div>
+
+              <div class="in-progress-note">
+                <strong><i class="fa-solid fa-magnifying-glass"></i> Action Taken by Mess Supervisor:</strong><br>
+                Investigated with head chef. Electric casserole heating element was found switched off. Written warning issued to the buffet station attendant.
+              </div>
+            </div>
+
+            <!-- Ticket 3 -->
+            <div class="ticket-card" style="margin-bottom: 0;">
+              <div class="ticket-header">
+                <div class="ticket-id">
+                  <i class="fa-solid fa-ticket" style="color: var(--text-muted);"></i> #CMP-4780
+                  <span style="font-size: 0.75rem; font-weight: normal; color: var(--text-muted);">• Plate Shortage</span>
+                </div>
+                <span class="status-badge status-resolved">
+                  <i class="fa-solid fa-circle-check"></i> Resolved
+                </span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-dark); margin-bottom: 0.25rem;">
+                <strong>Issue:</strong> Continuous plate shortage at rush hour 1:15 PM causing 15-minute wait in the heat.
+              </p>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Filed: Sept 14, 2026, 01:30 PM</div>
+
+              <div class="resolution-note">
+                <strong><i class="fa-solid fa-circle-check"></i> Resolution Note by Mess Committee:</strong><br>
+                Procured 150 additional stainless steel plates. Plate washing conveyor speed increased. Issue has not recurred.
+              </div>
+            </div>
+            </div>
+
+          </div>
+
+          <!-- Important Warden Contact Info -->
+          <div class="card" style="margin-top: 1.5rem; background: #fff5f5; border-color: #fecaca;">
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.5rem; color: var(--danger); margin-top: 0.2rem;"></i>
+              <div>
+                <h4 style="color: #991b1b; margin-bottom: 0.25rem;">Direct Emergency Escalation</h4>
+                <p style="font-size: 0.825rem; color: #7f1d1d; margin: 0; line-height: 1.5;">
+                  If you spot an immediate safety hazard, food contamination, or insect issue, report directly to the Chief Hostel Warden:
+                  <strong>080-2442-9900</strong> or visit Office Room 102.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border: none; padding-top: 0;">
+        <div>&copy; 2026 MessMate - Student Grievance Redressal System.</div>
+        <div><a href="announcements.html" style="color: var(--primary-light);">Check Official Announcements &rarr;</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

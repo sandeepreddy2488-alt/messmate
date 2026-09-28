@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MessMate - Smart Hostel Mess Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Home page specific styles */
+    .hero-section {
+      background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 60%, #ecfdf5 100%);
+      padding: 4.5rem 0 3.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--text-dark);
+      margin-bottom: 1.25rem;
+    }
+    .hero-title span {
+      color: var(--primary);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(5, 150, 105, 0.2);
+    }
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .quick-status-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--border);
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+    .feature-box {
+      background: #ffffff;
+      padding: 1.75rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .feature-box:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary-light);
+    }
+    .feature-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 1.25rem;
+    }
+    .stats-strip {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 3rem 0;
+      border-radius: var(--radius-lg);
+      margin: 3.5rem 0;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #10b981;
+      margin-bottom: 0.25rem;
+    }
+    .stat-label {
+      font-size: 0.9rem;
+      color: #94a3b8;
+    }
+    .meal-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .meal-mini-card {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      position: relative;
+      transition: var(--transition);
+    }
+    .meal-mini-card:hover {
+      border-color: var(--primary);
+    }
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 2.25rem; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-utensils"></i>
+        <span>MessMate</span>
+        <span class="brand-badge">Central Mess #2</span>
+      </a>
+
+      <button class="menu-toggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link active"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="today-menu.html" class="nav-link"><i class="fa-solid fa-calendar-day"></i> Today's Menu</a></li>
+        <li><a href="weekly-menu.html" class="nav-link"><i class="fa-solid fa-calendar-week"></i> Weekly Menu</a></li>
+        <li><a href="feedback.html" class="nav-link"><i class="fa-solid fa-star"></i> Ratings</a></li>
+        <li><a href="complaints.html" class="nav-link"><i class="fa-solid fa-circle-exclamation"></i> Complaints</a></li>
+        <li><a href="announcements.html" class="nav-link"><i class="fa-solid fa-bullhorn"></i> Notices</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-primary btn-sm">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Login / Portal
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-badge">
+            <i class="fa-solid fa-sparkles"></i> College Mess Digital System
+          </div>
+          <h1 class="hero-title">
+            Fresh Meals, Zero Queue Confusion, <span>Better Dining.</span>
+          </h1>
+          <p class="lead">
+            MessMate connects hostel residents with the mess committee. Check what is cooking today, rate your daily meals, submit grievances, and stay updated with live announcements.
+          </p>
+          <div class="hero-actions">
+            <a href="today-menu.html" class="btn btn-primary btn-lg">
+              <i class="fa-solid fa-utensils"></i> View Today's Menu
+            </a>
+            <a href="login.html" class="btn btn-outline btn-lg">
+              <i class="fa-solid fa-user-graduate"></i> Student Portal
+            </a>
+            <a href="admin-dashboard.html" class="btn btn-outline btn-lg" style="color: var(--text-muted);">
+              <i class="fa-solid fa-user-shield"></i> Admin View
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Status Widget -->
+        <div>
+          <div class="quick-status-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <span class="badge badge-live">Live Serving Now</span>
+              <span style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-regular fa-clock"></i> 12:30 PM - 02:30 PM</span>
+            </div>
+            <h3 style="font-size: 1.4rem; margin-bottom: 0.25rem;">Lunch is Active! 🍲</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
+              Serving fresh hot lunch in Mess Hall A & B. High protein and veg counters open.
+            </p>
+
+            <div style="background: var(--bg-main); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.25rem;">
+              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 0.4rem;">
+                Today's Special
+              </div>
+              <div style="font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-bowl-rice" style="color: var(--primary);"></i> Paneer Butter Masala & Dal Tadka
+              </div>
+              <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
+                Phulka, Jeera Rice, Curd, Fresh Cucumber Salad & Gulab Jamun.
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem;">
+              <a href="feedback.html" class="btn btn-outline-primary btn-sm btn-block">
+                <i class="fa-regular fa-star"></i> Rate This Meal
+              </a>
+              <a href="today-menu.html" class="btn btn-primary btn-sm btn-block">
+                Details <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+
+      <!-- Today's 4-Meal Sneak Peek -->
+      <section style="margin-bottom: 3.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span class="badge badge-primary" style="margin-bottom: 0.5rem;">Daily Schedule</span>
+            <h2>Today's Meal Timings & Highlights</h2>
+            <p class="lead" style="font-size: 0.95rem; margin: 0;">Timings adhere strictly to College Hostel Regulations.</p>
+          </div>
+          <a href="today-menu.html" class="btn btn-outline-primary btn-sm">
+            Full Nutrition Details <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <div class="meal-preview-grid">
+          <!-- Breakfast -->
+          <div class="meal-mini-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-weight: 700; color: var(--text-dark); font-size: 1.05rem;">
+                <i class="fa-solid fa-mug-saucer" style="color: var(--accent);"></i> Breakfast
+              </span>
+              <span class="status-badge status-resolved" style="font-size: 0.7rem;">Completed</span>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">07:30 AM – 09:30 AM</div>
+            <p style="font-size: 0.875rem; color: var(--text-body); margin: 0;">
+              Hot Idli with Sambar, Coconut Chutney, Poha, Boiled Eggs / Banana, Tea & Coffee.
+            </p>
+          </div>
+
+          <!-- Lunch -->
+          <div class="meal-mini-card" style="border-color: var(--primary); box-shadow: var(--shadow-md);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-weight: 700; color: var(--primary); font-size: 1.05rem;">
+                <i class="fa-solid fa-bowl-food" style="color: var(--primary);"></i> Lunch
+              </span>
+              <span class="badge badge-live" style="font-size: 0.7rem;">Active</span>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">12:30 PM – 02:30 PM</div>
+            <p style="font-size: 0.875rem; color: var(--text-body); margin: 0;">
+              Paneer Butter Masala, Dal Tadka, Jeera Rice, Soft Phulka, Curd & Fresh Gulab Jamun.
+            </p>
+          </div>
+
+          <!-- Evening Snacks -->
+          <div class="meal-mini-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-weight: 700; color: var(--text-dark); font-size: 1.05rem;">
+                <i class="fa-solid fa-cookie-bite" style="color: var(--accent);"></i> Snacks
+              </span>
+              <span class="status-badge status-in-progress" style="font-size: 0.7rem;">Upcoming</span>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">05:00 PM – 06:00 PM</div>
+            <p style="font-size: 0.875rem; color: var(--text-body); margin: 0;">
+              Crispy Vegetable Samosa with Mint-Coriander Chutney and Special Cardamom Tea.
+            </p>
+          </div>
+
+          <!-- Dinner -->
+          <div class="meal-mini-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-weight: 700; color: var(--text-dark); font-size: 1.05rem;">
+                <i class="fa-solid fa-plate-wheat" style="color: var(--primary-dark);"></i> Dinner
+              </span>
+              <span class="status-badge status-in-progress" style="font-size: 0.7rem;">Upcoming</span>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">07:30 PM – 09:30 PM</div>
+            <p style="font-size: 0.875rem; color: var(--text-body); margin: 0;">
+              Mixed Veg Korma, Yellow Moong Dal, Steamed Rice, Tawa Roti, and Cut Watermelon.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Key Features Grid -->
+      <section style="margin-bottom: 3.5rem;">
+        <div style="text-align: center; max-width: 650px; margin: 0 auto 2rem;">
+          <span class="badge badge-primary">Why MessMate</span>
+          <h2 style="margin-top: 0.5rem;">Designed for Seamless Hostel Living</h2>
+          <p class="lead" style="font-size: 0.95rem;">
+            No more relying on blurry whiteboard photos or unorganized WhatsApp groups for your mess updates.
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-box">
+            <div class="feature-icon">
+              <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <h3>Always-Updated Menus</h3>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;">
+              View daily meal updates and the full 7-day weekly schedule with dietary tags (Veg, Non-Veg, High Protein).
+            </p>
+            <a href="weekly-menu.html" style="color: var(--primary); font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.75rem;">
+              Check weekly menu <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-icon" style="background: var(--accent-soft); color: var(--accent);">
+              <i class="fa-solid fa-star-half-stroke"></i>
+            </div>
+            <h3>Anonymous Meal Ratings</h3>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;">
+              Rate food taste, quantity, and cleanliness after each meal. Help the mess management maintain high standards.
+            </p>
+            <a href="feedback.html" style="color: var(--accent); font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.75rem;">
+              Submit feedback <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-icon" style="background: var(--danger-soft); color: var(--danger);">
+              <i class="fa-solid fa-headset"></i>
+            </div>
+            <h3>Grievance Tracking</h3>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;">
+              Report issues directly with photo proof and monitor real-time resolution stages with official mess staff notes.
+            </p>
+            <a href="complaints.html" style="color: var(--danger); font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.75rem;">
+              Track complaints <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-icon" style="background: var(--info-soft); color: var(--info);">
+              <i class="fa-solid fa-bullhorn"></i>
+            </div>
+            <h3>Official Notice Board</h3>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;">
+              Never miss special festive feasts, maintenance shutdowns, mess rebate rules, or warden announcements.
+            </p>
+            <a href="announcements.html" style="color: var(--info); font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.75rem;">
+              Read notices <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mess Stats Bar -->
+      <section class="stats-strip">
+        <div class="container">
+          <div class="stats-grid">
+            <div>
+              <div class="stat-number">1,250+</div>
+              <div class="stat-label">Daily Resident Diners</div>
+            </div>
+            <div>
+              <div class="stat-number">4.3 ★</div>
+              <div class="stat-label">Average Food Satisfaction</div>
+            </div>
+            <div>
+              <div class="stat-number">98.4%</div>
+              <div class="stat-label">Grievance Resolution Rate</div>
+            </div>
+            <div>
+              <div class="stat-number">4 Times</div>
+              <div class="stat-label">Fresh Meals Cooked Daily</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Student Testimonials -->
+      <section style="margin-bottom: 3.5rem;">
+        <div style="text-align: center; max-width: 600px; margin: 0 auto 2rem;">
+          <span class="badge badge-primary">Student Voice</span>
+          <h2 style="margin-top: 0.5rem;">What Hostel Residents Say</h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+          <div class="card">
+            <div style="color: var(--accent); margin-bottom: 0.75rem; font-size: 0.9rem;">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <p style="font-size: 0.925rem; font-style: italic; color: var(--text-dark); margin-bottom: 1rem;">
+              "Checking today's menu right before leaving the lecture hall saved me so much time. The meal rating actually made the caterer improve breakfast quality!"
+            </p>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div class="user-avatar" style="background: #3b82f6;">RS</div>
+              <div>
+                <h4 style="font-size: 0.9rem; margin: 0;">Rahul Sharma</h4>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">Block B, 3rd Year B.Tech</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="color: var(--accent); margin-bottom: 0.75rem; font-size: 0.9rem;">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+            </div>
+            <p style="font-size: 0.925rem; font-style: italic; color: var(--text-dark); margin-bottom: 1rem;">
+              "I raised a complaint about water filter cleaning in the mess hall, and within 48 hours the mess committee resolved it and attached the inspection note."
+            </p>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div class="user-avatar" style="background: #ec4899;">AP</div>
+              <div>
+                <h4 style="font-size: 0.9rem; margin: 0;">Ananya Patel</h4>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">Block C, 2nd Year MBA</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="color: var(--accent); margin-bottom: 0.75rem; font-size: 0.9rem;">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <p style="font-size: 0.925rem; font-style: italic; color: var(--text-dark); margin-bottom: 1rem;">
+              "The digital mess card preview is super convenient when entering the hall. The UI is clean, intuitive, and works smoothly on mobile."
+            </p>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div class="user-avatar" style="background: #10b981;">VK</div>
+              <div>
+                <h4 style="font-size: 0.9rem; margin: 0;">Vivek Kumar</h4>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">Block A, 4th Year Dual Degree</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Action CTA Box -->
+      <section style="background: linear-gradient(135deg, #065f46 0%, #047857 100%); color: #ffffff; padding: 2.5rem; border-radius: var(--radius-lg); text-align: center;">
+        <h2 style="color: #ffffff; margin-bottom: 0.75rem;">Are you a resident student or mess supervisor?</h2>
+        <p style="color: #a7f3d0; max-width: 600px; margin: 0 auto 1.5rem; font-size: 0.95rem;">
+          Log into your account to manage your meal attendance, view your personal complaints history, or update mess items.
+        </p>
+        <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+          <a href="login.html" class="btn btn-lg" style="background: #ffffff; color: #065f46; font-weight: 700;">
+            <i class="fa-solid fa-user-lock"></i> Go to Sign In
+          </a>
+          <a href="dashboard.html" class="btn btn-lg" style="border: 1px solid #ffffff; color: #ffffff;">
+            <i class="fa-solid fa-gauge"></i> Preview Student Dashboard
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3><i class="fa-solid fa-utensils"></i> MessMate</h3>
+          <p style="font-size: 0.875rem; line-height: 1.6;">
+            A premier college mess management solution enhancing dining transparency, meal quality tracking, and student convenience.
+          </p>
+          <div style="margin-top: 1rem; display: flex; gap: 0.75rem;">
+            <span class="badge" style="background: #1e293b; color: #94a3b8;">Hostel Wing B</span>
+            <span class="badge" style="background: #1e293b; color: #94a3b8;">FSSAI Compliant</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Pages</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Home Overview</a></li>
+            <li><a href="today-menu.html">Today's Meal Menu</a></li>
+            <li><a href="weekly-menu.html">Full Weekly Schedule</a></li>
+            <li><a href="feedback.html">Meal Ratings & Reviews</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Grievance & Support</h4>
+          <ul class="footer-links">
+            <li><a href="complaints.html">File Grievance</a></li>
+            <li><a href="announcements.html">Mess Notice Board</a></li>
+            <li><a href="dashboard.html">Student Portal</a></li>
+            <li><a href="admin-dashboard.html">Mess Admin Portal</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Mess Timings</h4>
+          <div style="font-size: 0.825rem; line-height: 1.8;">
+            <div><strong>Breakfast:</strong> 07:30 AM – 09:30 AM</div>
+            <div><strong>Lunch:</strong> 12:30 PM – 02:30 PM</div>
+            <div><strong>Snacks:</strong> 05:00 PM – 06:00 PM</div>
+            <div><strong>Dinner:</strong> 07:30 PM – 09:30 PM</div>
+            <div style="margin-top: 0.75rem; color: #cbd5e1;">
+              <i class="fa-solid fa-phone" style="color: var(--primary-light);"></i> Helpline: Ext 4022
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 MessMate - Campus Hostel Dining System. Built for students.</div>
+        <div style="display: flex; gap: 1.25rem;">
+          <a href="#" style="color: #94a3b8;">Privacy Policy</a>
+          <a href="#" style="color: #94a3b8;">Hostel Mess Guidelines</a>
+          <a href="#" style="color: #94a3b8;">Contact Warden</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

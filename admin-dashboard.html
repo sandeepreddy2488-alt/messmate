@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mess Manager & Admin Portal - MessMate</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .admin-stat-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .admin-stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+    .admin-layout-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.75rem;
+    }
+    @media (max-width: 992px) {
+      .admin-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .admin-layout-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 600px) {
+      .admin-stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-utensils"></i>
+        <span>MessMate</span>
+        <span class="brand-badge" style="background: #0f172a; color: #ffffff;">Admin Console</span>
+      </a>
+
+      <button class="menu-toggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <ul class="nav-menu">
+        <li><a href="admin-dashboard.html" class="nav-link active"><i class="fa-solid fa-gauge"></i> Overview</a></li>
+        <li><a href="today-menu.html" class="nav-link"><i class="fa-solid fa-calendar-day"></i> View Today's Menu</a></li>
+        <li><a href="weekly-menu.html" class="nav-link"><i class="fa-solid fa-calendar-week"></i> Weekly Schedule</a></li>
+        <li><a href="announcements.html" class="nav-link"><i class="fa-solid fa-bullhorn"></i> Live Notices</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="user-pill" style="border-color: #cbd5e1;">
+          <div class="user-avatar" style="background: #0f172a;">KR</div>
+          <span>K. Rao (Supervisor)</span>
+        </div>
+        <a href="dashboard.html" class="btn btn-outline btn-sm" title="Switch to Student View">
+          <i class="fa-solid fa-user-graduate"></i> Student View
+        </a>
+        <a href="login.html" class="btn btn-outline btn-sm" title="Log out">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
+    <div class="container page-header-content">
+      <div>
+        <div class="breadcrumb">
+          <a href="index.html">Home</a>
+          <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+          <span>Admin Console</span>
+        </div>
+        <h1>Mess Administration & Operations</h1>
+        <p class="lead" style="margin: 0;">Central Mess Hall #2 (Capacity: 1,050 students) • Live Kitchen Supervision</p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <span class="badge badge-live" style="font-size: 0.85rem; padding: 0.5rem 0.85rem;">
+          Kitchen Live: Lunch Closing & Snacks Prep
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+
+      <!-- Admin Stat KPIs -->
+      <div class="admin-stats-grid">
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon" style="background: var(--primary-soft); color: var(--primary);">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">842 / 1,050</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Meals Served Today (80%)</div>
+          </div>
+        </div>
+
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon" style="background: var(--accent-soft); color: var(--accent);">
+            <i class="fa-solid fa-star"></i>
+          </div>
+          <div>
+            <div id="kpi-avg-rating" style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">4.3 ★</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Avg Student Rating Today</div>
+          </div>
+        </div>
+
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon" style="background: var(--danger-soft); color: var(--danger);">
+            <i class="fa-solid fa-circle-exclamation"></i>
+          </div>
+          <div>
+            <div id="kpi-pending-complaints" style="font-size: 1.6rem; font-weight: 800; color: var(--danger);">3 Open</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Pending Grievances</div>
+          </div>
+        </div>
+
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon" style="background: #eff6ff; color: #3b82f6;">
+            <i class="fa-solid fa-clipboard-check"></i>
+          </div>
+          <div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: #2563eb;">98%</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Hygiene Audit Score (FSSAI)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Layout Grid -->
+      <div class="admin-layout-grid">
+
+        <!-- Left: Grievances Table & Meal Prep Status -->
+        <div>
+          <!-- Grievance Management Table -->
+          <div class="card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-inbox" style="color: var(--danger);"></i>
+                Active Student Grievances
+              </div>
+              <span class="badge" style="background: var(--danger-soft); color: var(--danger);">Live SQLite Queue</span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Ticket</th>
+                    <th>Student / Room</th>
+                    <th>Issue Summary</th>
+                    <th>Priority</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-complaints-tbody">
+                  <tr id="row-5014">
+                    <td><strong>#CMP-5014</strong></td>
+                    <td>
+                      <div>Rahul S.</div>
+                      <div style="font-size: 0.75rem; color: var(--text-muted);">Room B-304</div>
+                    </td>
+                    <td>Food Temperature (Cold Rotis)</td>
+                    <td><span class="status-badge status-in-progress">Medium</span></td>
+                    <td>
+                      <button class="btn btn-primary btn-sm" onclick="showToast('Ticket Resolved', 'Marked #CMP-5014 as Resolved. Student notified via email.', 'success'); document.getElementById('row-5014').style.opacity = '0.4'; this.disabled = true; this.textContent = 'Resolved';">
+                        Resolve
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr id="row-5088">
+                    <td><strong>#CMP-5088</strong></td>
+                    <td>
+                      <div>Ananya P.</div>
+                      <div style="font-size: 0.75rem; color: var(--text-muted);">Room C-112</div>
+                    </td>
+                    <td>Spill on Dining Table 14</td>
+                    <td><span class="status-badge status-pending">High</span></td>
+                    <td>
+                      <button class="btn btn-primary btn-sm" onclick="showToast('Ticket Resolved', 'Marked #CMP-5088 as Resolved. Table cleaned.', 'success'); document.getElementById('row-5088').style.opacity = '0.4'; this.disabled = true; this.textContent = 'Resolved';">
+                        Resolve
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr id="row-5102">
+                    <td><strong>#CMP-5102</strong></td>
+                    <td>
+                      <div>Vikram J.</div>
+                      <div style="font-size: 0.75rem; color: var(--text-muted);">Room A-202</div>
+                    </td>
+                    <td>Request for extra curd portion</td>
+                    <td><span class="status-badge" style="background: var(--bg-subtle);">Low</span></td>
+                    <td>
+                      <button class="btn btn-outline btn-sm" onclick="showToast('Acknowledged', 'Response sent to student.', 'info'); this.disabled = true;">
+                        Reply
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Kitchen Prep & Ration Monitor -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-kitchen-set" style="color: var(--primary);"></i>
+                Evening & Dinner Kitchen Prep Status
+              </div>
+              <span class="badge badge-veg">On Schedule</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.25rem;">
+                  <span><strong>Dinner:</strong> Mixed Vegetable Korma & Moong Dal</span>
+                  <span style="font-weight: 700; color: var(--primary);">70% Ready</span>
+                </div>
+                <div style="height: 8px; background: var(--bg-subtle); border-radius: 4px; overflow: hidden;">
+                  <div style="width: 70%; height: 100%; background: var(--primary);"></div>
+                </div>
+              </div>
+
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.25rem;">
+                  <span><strong>Snacks:</strong> Fresh Samosa Frying & Tea Brewing</span>
+                  <span style="font-weight: 700; color: var(--accent);">95% Ready</span>
+                </div>
+                <div style="height: 8px; background: var(--bg-subtle); border-radius: 4px; overflow: hidden;">
+                  <div style="width: 95%; height: 100%; background: var(--accent);"></div>
+                </div>
+              </div>
+
+              <div style="background: var(--bg-main); padding: 1rem; border-radius: var(--radius-md); font-size: 0.85rem; margin-top: 0.5rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+                <div>
+                  <strong>Special Meal Bookings:</strong><br>
+                  • Jain Diet (No Onion/Garlic): 32 students<br>
+                  • Sick Diet (Khichdi & Curd): 14 students
+                </div>
+                <div>
+                  <strong>Ration Inventory Alert:</strong><br>
+                  <span style="color: var(--primary);"><i class="fa-solid fa-circle-check"></i> Paneer stock: OK (45 kg)</span><br>
+                  <span style="color: var(--primary);"><i class="fa-solid fa-circle-check"></i> Basmati Rice: OK (200 kg)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Publish Announcement Form & Quick Stats -->
+        <div>
+          <!-- Announcement Publisher -->
+          <div class="card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-bullhorn" style="color: var(--primary);"></i>
+                Post Notice to Students
+              </div>
+            </div>
+
+            <form id="admin-announcement-form">
+              <div class="form-group">
+                <label class="form-label" for="notice-title">Notice Title *</label>
+                <input type="text" id="notice-title" class="form-control" placeholder="e.g. Special Dessert Tonight" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="notice-cat">Category</label>
+                <select id="notice-cat" class="form-control">
+                  <option value="events">Feasts & Events</option>
+                  <option value="menu">Menu Update</option>
+                  <option value="rebate">Rebate / Leave</option>
+                  <option value="rules">Hostel Rule</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="notice-body">Notice Content *</label>
+                <textarea id="notice-body" class="form-control" rows="3" placeholder="Write message to be displayed on student dashboards and notice boards..." required></textarea>
+              </div>
+
+              <div style="margin-bottom: 1.25rem;">
+                <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; cursor: pointer;">
+                  <input type="checkbox"> Pin to top of Student Dashboard
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fa-solid fa-paper-plane"></i> Publish to Notice Board
+              </button>
+            </form>
+          </div>
+
+          <!-- Student Satisfaction Metrics -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title" style="font-size: 1rem;">
+                <i class="fa-solid fa-chart-pie" style="color: var(--accent);"></i>
+                Feedback Category Scores
+              </div>
+              <span class="badge badge-primary">Sept 20</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.85rem;">
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem;">
+                  <span>Taste & Cooking</span>
+                  <strong>4.4 / 5.0</strong>
+                </div>
+                <div style="height: 6px; background: var(--bg-subtle); border-radius: 3px; overflow: hidden;">
+                  <div style="width: 88%; height: 100%; background: #10b981;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem;">
+                  <span>Hygiene & Cleanliness</span>
+                  <strong>4.7 / 5.0</strong>
+                </div>
+                <div style="height: 6px; background: var(--bg-subtle); border-radius: 3px; overflow: hidden;">
+                  <div style="width: 94%; height: 100%; background: #10b981;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem;">
+                  <span>Food Temperature</span>
+                  <strong>3.9 / 5.0</strong>
+                </div>
+                <div style="height: 6px; background: var(--bg-subtle); border-radius: 3px; overflow: hidden;">
+                  <div style="width: 78%; height: 100%; background: #f59e0b;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem;">
+                  <span>Service & Refill Speed</span>
+                  <strong>4.2 / 5.0</strong>
+                </div>
+                <div style="height: 6px; background: var(--bg-subtle); border-radius: 3px; overflow: hidden;">
+                  <div style="width: 84%; height: 100%; background: #3b82f6;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); text-align: center;">
+              <a href="feedback.html" class="btn btn-outline btn-sm btn-block">
+                View All Student Comments
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border: none; padding-top: 0;">
+        <div>&copy; 2026 MessMate - Campus Mess Administration System. Authorized Staff Only.</div>
+        <div><a href="dashboard.html" style="color: var(--primary-light);">Switch to Student Dashboard &rarr;</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

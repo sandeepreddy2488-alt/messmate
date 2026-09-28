@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Mess Schedule - MessMate</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .day-tabs {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .day-tab-btn {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.4rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-body);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 110px;
+      transition: var(--transition);
+    }
+    .day-tab-btn span.day-sub {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+    .day-tab-btn:hover {
+      border-color: var(--primary-light);
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+    }
+    .day-tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3);
+    }
+    .day-tab-btn.active span.day-sub {
+      color: #d1fae5;
+    }
+    .weekly-meal-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .weekly-meal-table th, .weekly-meal-table td {
+      padding: 1.25rem;
+      border: 1px solid var(--border);
+    }
+    .weekly-meal-table th {
+      background: var(--bg-subtle);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .weekly-meal-table td {
+      background: #ffffff;
+      vertical-align: top;
+      width: 25%;
+    }
+    @media (max-width: 900px) {
+      .weekly-meal-table {
+        display: block;
+      }
+      .weekly-meal-table tr {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: #ffffff;
+        overflow: hidden;
+      }
+      .weekly-meal-table td {
+        width: 100%;
+        border: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .weekly-meal-table td:last-child {
+        border-bottom: none;
+      }
+      .weekly-meal-table thead {
+        display: none;
+      }
+      .weekly-meal-table td::before {
+        content: attr(data-meal);
+        display: block;
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-utensils"></i>
+        <span>MessMate</span>
+      </a>
+
+      <button class="menu-toggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="today-menu.html" class="nav-link"><i class="fa-solid fa-calendar-day"></i> Today's Menu</a></li>
+        <li><a href="weekly-menu.html" class="nav-link active"><i class="fa-solid fa-calendar-week"></i> Weekly Menu</a></li>
+        <li><a href="feedback.html" class="nav-link"><i class="fa-solid fa-star"></i> Ratings</a></li>
+        <li><a href="complaints.html" class="nav-link"><i class="fa-solid fa-circle-exclamation"></i> Complaints</a></li>
+        <li><a href="announcements.html" class="nav-link"><i class="fa-solid fa-bullhorn"></i> Notices</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="dashboard.html" class="btn btn-outline btn-sm">
+          <i class="fa-solid fa-gauge"></i> My Dashboard
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container page-header-content">
+      <div>
+        <div class="breadcrumb">
+          <a href="index.html">Home</a>
+          <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+          <span>Weekly Menu</span>
+        </div>
+        <h1>7-Day Mess Schedule</h1>
+        <p class="lead" style="margin: 0;">Revolving catering menu for College Mess Halls 1 & 2 (Semester Spring 2026)</p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <button class="btn btn-outline" onclick="showToast('Menu PDF', 'The official printable hostel mess chart is downloading...', 'info');">
+          <i class="fa-solid fa-file-pdf" style="color: var(--danger);"></i> Download PDF Menu
+        </button>
+        <a href="today-menu.html" class="btn btn-primary">
+          <i class="fa-solid fa-utensils"></i> View Today Only
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+
+      <!-- Days Tabs Navigation -->
+      <div class="tabs-container">
+        <div class="day-tabs">
+          <button class="day-tab-btn tab-btn active" data-tab="tab-mon">
+            <span>Monday</span>
+            <span class="day-sub">Rajma Chawal</span>
+          </button>
+          <button class="day-tab-btn tab-btn" data-tab="tab-tue">
+            <span>Tuesday</span>
+            <span class="day-sub">Kadhi Pakora</span>
+          </button>
+          <button class="day-tab-btn tab-btn" data-tab="tab-wed">
+            <span>Wednesday</span>
+            <span class="day-sub">Biryani Day</span>
+          </button>
+          <button class="day-tab-btn tab-btn" data-tab="tab-thu">
+            <span>Thursday</span>
+            <span class="day-sub">Paneer & Poha</span>
+          </button>
+          <button class="day-tab-btn tab-btn" data-tab="tab-fri">
+            <span>Friday</span>
+            <span class="day-sub">Puri Bhaji</span>
+          </button>
+          <button class="day-tab-btn tab-btn" data-tab="tab-sat">
+            <span>Saturday</span>
+            <span class="day-sub">Uttapam & Halwa</span>
+          </button>
+          <button class="day-tab-btn tab-btn" data-tab="tab-sun">
+            <span>Sunday</span>
+            <span class="day-sub">Feast & Dessert</span>
+          </button>
+        </div>
+
+        <!-- MONDAY -->
+        <div id="tab-mon" class="tab-content active">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-calendar-day" style="color: var(--primary);"></i> Monday Complete Schedule
+              </div>
+              <span class="badge badge-primary">High Energy Start</span>
+            </div>
+
+            <table class="weekly-meal-table">
+              <thead>
+                <tr>
+                  <th><i class="fa-solid fa-mug-saucer"></i> Breakfast (7:30 - 9:30 AM)</th>
+                  <th><i class="fa-solid fa-bowl-rice"></i> Lunch (12:30 - 2:30 PM)</th>
+                  <th><i class="fa-solid fa-cookie-bite"></i> Snacks (5:00 - 6:00 PM)</th>
+                  <th><i class="fa-solid fa-utensils"></i> Dinner (7:30 - 9:30 PM)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td data-meal="Breakfast">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Aloo Paratha</strong> (Fresh butter)</li>
+                      <li>Curd & Mango Pickle</li>
+                      <li>Sweet Corn Salad</li>
+                      <li>Hot Masala Chai / Filter Coffee</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Lunch">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Punjabi Rajma Masala</strong></li>
+                      <li>Steamed Basmati Rice</li>
+                      <li>Mix Veg Dry (Beans, Carrot)</li>
+                      <li>Soft Phulka (Tawa)</li>
+                      <li>Boondi Raita & Salad</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Snacks">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Crispy Bread Pakora</strong> (2 pcs)</li>
+                      <li>Tomato Ketchup & Green Chutney</li>
+                      <li>Hot Cardamom Chai</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Dinner">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Matar Paneer</strong> / Egg Curry</li>
+                      <li>Dal Fry & Jeera Rice</li>
+                      <li>Tawa Chapati</li>
+                      <li>Fresh Cucumber Salad</li>
+                      <li><strong>Rice Kheer</strong> (Dessert)</li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TUESDAY -->
+        <div id="tab-tue" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-calendar-day" style="color: var(--primary);"></i> Tuesday Complete Schedule
+              </div>
+              <span class="badge badge-veg">100% Pure Veg Day</span>
+            </div>
+
+            <table class="weekly-meal-table">
+              <thead>
+                <tr>
+                  <th><i class="fa-solid fa-mug-saucer"></i> Breakfast (7:30 - 9:30 AM)</th>
+                  <th><i class="fa-solid fa-bowl-rice"></i> Lunch (12:30 - 2:30 PM)</th>
+                  <th><i class="fa-solid fa-cookie-bite"></i> Snacks (5:00 - 6:00 PM)</th>
+                  <th><i class="fa-solid fa-utensils"></i> Dinner (7:30 - 9:30 PM)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td data-meal="Breakfast">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Vegetable Rava Upma</strong></li>
+                      <li>Fresh Coconut Chutney</li>
+                      <li>Suji Halwa (Kesari)</li>
+                      <li>Fresh Milk / Tea</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Lunch">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Punjabi Kadhi Pakora</strong></li>
+                      <li>Jeera Rice & Tawa Roti</li>
+                      <li>Aloo Gobi Adraki</li>
+                      <li>Fryums / Roasted Papad</li>
+                      <li>Onion-Chilli Salad</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Snacks">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Spicy Bhel Puri / Sev Puri</strong></li>
+                      <li>Chilled Nimbu Pani (Lemonade)</li>
+                      <li>Biscuits</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Dinner">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Amritsari Chana Masala</strong></li>
+                      <li>Tawa Paratha & Steamed Rice</li>
+                      <li>Yellow Moong Dal</li>
+                      <li>Fruit Custard Bowl</li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- WEDNESDAY -->
+        <div id="tab-wed" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-calendar-day" style="color: var(--primary);"></i> Wednesday Complete Schedule
+              </div>
+              <span class="badge badge-special">Biryani Special</span>
+            </div>
+
+            <table class="weekly-meal-table">
+              <thead>
+                <tr>
+                  <th><i class="fa-solid fa-mug-saucer"></i> Breakfast (7:30 - 9:30 AM)</th>
+                  <th><i class="fa-solid fa-bowl-rice"></i> Lunch (12:30 - 2:30 PM)</th>
+                  <th><i class="fa-solid fa-cookie-bite"></i> Snacks (5:00 - 6:00 PM)</th>
+                  <th><i class="fa-solid fa-utensils"></i> Dinner (7:30 - 9:30 PM)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td data-meal="Breakfast">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Crispy Masala Dosa</strong></li>
+                      <li>Vegetable Sambar</li>
+                      <li>Tomato & Coconut Chutneys</li>
+                      <li>Filter Coffee</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Lunch">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Hyderabadi Veg / Chicken Biryani</strong></li>
+                      <li>Mirchi Ka Salan (Gravy)</li>
+                      <li>Cucumber Onion Raita</li>
+                      <li>Crisp Papad & Lemon wedges</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Snacks">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Vegetable Cutlet</strong> (2 pcs)</li>
+                      <li>Mint Chutney</li>
+                      <li>Hot Masala Tea</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Dinner">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Dal Makhani (Slow Cooked)</strong></li>
+                      <li>Smoky Baingan Bharta</li>
+                      <li>Phulka & Jeera Rice</li>
+                      <li>Warm Gulab Jamun (1 pc)</li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- THURSDAY -->
+        <div id="tab-thu" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-calendar-day" style="color: var(--primary);"></i> Thursday Complete Schedule
+              </div>
+              <span class="badge badge-primary">Balanced Nutrition</span>
+            </div>
+
+            <table class="weekly-meal-table">
+              <thead>
+                <tr>
+                  <th><i class="fa-solid fa-mug-saucer"></i> Breakfast (7:30 - 9:30 AM)</th>
+                  <th><i class="fa-solid fa-bowl-rice"></i> Lunch (12:30 - 2:30 PM)</th>
+                  <th><i class="fa-solid fa-cookie-bite"></i> Snacks (5:00 - 6:00 PM)</th>
+                  <th><i class="fa-solid fa-utensils"></i> Dinner (7:30 - 9:30 PM)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td data-meal="Breakfast">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Indori Poha with Sev</strong></li>
+                      <li>Crispy Warm Jalebi</li>
+                      <li>Sprouted Moong Salad</li>
+                      <li>Tea / Coffee</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Lunch">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Paneer Do Pyaza</strong></li>
+                      <li>Healthy Dal Palak</li>
+                      <li>Steamed Rice & Roti</li>
+                      <li>Sweet Lassi / Plain Curd</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Snacks">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Khasta Kachori</strong></li>
+                      <li>Sweet Imli & Mint Dip</li>
+                      <li>Ginger Tea</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Dinner">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Aloo Shimla Mirch</strong></li>
+                      <li>Toor Dal Tadka</li>
+                      <li>Chapati & Steamed Rice</li>
+                      <li>Fresh Seasonal Fruit Bowl</li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- FRIDAY -->
+        <div id="tab-fri" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-calendar-day" style="color: var(--primary);"></i> Friday Complete Schedule
+              </div>
+              <span class="badge badge-special">Weekend Kickoff</span>
+            </div>
+
+            <table class="weekly-meal-table">
+              <thead>
+                <tr>
+                  <th><i class="fa-solid fa-mug-saucer"></i> Breakfast (7:30 - 9:30 AM)</th>
+                  <th><i class="fa-solid fa-bowl-rice"></i> Lunch (12:30 - 2:30 PM)</th>
+                  <th><i class="fa-solid fa-cookie-bite"></i> Snacks (5:00 - 6:00 PM)</th>
+                  <th><i class="fa-solid fa-utensils"></i> Dinner (7:30 - 9:30 PM)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td data-meal="Breakfast">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Fluffy Puri with Aloo Bhaji</strong></li>
+                      <li>Mixed Mango Pickle</li>
+                      <li>Boiled Egg / Banana</li>
+                      <li>Hot Tea & Coffee</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Lunch">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>South Indian Thali:</strong></li>
+                      <li>Sambar, Tomato Rasam, Cabbage Poriyal</li>
+                      <li>Rice, Phulka, Curd, Appalam</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Snacks">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Mumbai Pav Bhaji</strong> (2 pavs)</li>
+                      <li>Chopped Onion & Lemon</li>
+                      <li>Cardamom Tea</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Dinner">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Butter Chicken / Shahi Paneer</strong></li>
+                      <li>Butter Naan / Phulka</li>
+                      <li>Peas Pulao & Raita</li>
+                      <li><strong>Vanilla Ice Cream Cup</strong></li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SATURDAY -->
+        <div id="tab-sat" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-calendar-day" style="color: var(--primary);"></i> Saturday Complete Schedule
+              </div>
+              <span class="badge badge-primary">Hostel Comfort Day</span>
+            </div>
+
+            <table class="weekly-meal-table">
+              <thead>
+                <tr>
+                  <th><i class="fa-solid fa-mug-saucer"></i> Breakfast (7:30 - 9:30 AM)</th>
+                  <th><i class="fa-solid fa-bowl-rice"></i> Lunch (12:30 - 2:30 PM)</th>
+                  <th><i class="fa-solid fa-cookie-bite"></i> Snacks (5:00 - 6:00 PM)</th>
+                  <th><i class="fa-solid fa-utensils"></i> Dinner (7:30 - 9:30 PM)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td data-meal="Breakfast">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Onion Tomato Uttapam</strong></li>
+                      <li>Red Chilli & Coconut Chutneys</li>
+                      <li>Banana & Cornflakes</li>
+                      <li>Tea / Milk</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Lunch">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Gujarati Moong Dal Khichdi</strong></li>
+                      <li>Sweet & Tangy Kadhi</li>
+                      <li>Crispy Aloo Chokha / Papad</li>
+                      <li>Pickle & Pure Desi Ghee</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Snacks">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Hot Kanda Bhajji (Onion Pakoda)</strong></li>
+                      <li>Green Chutney & Fried Mirchi</li>
+                      <li>Adrak Masala Chai</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Dinner">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Malai Kofta Curry</strong></li>
+                      <li>Yellow Dal Tadka</li>
+                      <li>Tawa Roti & Steamed Rice</li>
+                      <li><strong>Moong Dal Halwa</strong></li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SUNDAY -->
+        <div id="tab-sun" class="tab-content">
+          <div class="card" style="border: 2px solid var(--primary);">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-calendar-day" style="color: var(--primary);"></i> Sunday (Today's Menu)
+              </div>
+              <span class="badge badge-live">Active Today</span>
+            </div>
+
+            <table class="weekly-meal-table">
+              <thead>
+                <tr>
+                  <th><i class="fa-solid fa-mug-saucer"></i> Breakfast (7:30 - 9:30 AM)</th>
+                  <th><i class="fa-solid fa-bowl-rice"></i> Lunch (12:30 - 2:30 PM)</th>
+                  <th><i class="fa-solid fa-cookie-bite"></i> Snacks (5:00 - 6:00 PM)</th>
+                  <th><i class="fa-solid fa-utensils"></i> Dinner (7:30 - 9:30 PM)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td data-meal="Breakfast">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Steamed Idli & Medu Vada</strong></li>
+                      <li>Sambar & Coconut Chutney</li>
+                      <li>Poha with Peanuts</li>
+                      <li>Boiled Egg / Banana, Tea / Coffee</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Lunch">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Shahi Paneer Butter Masala</strong></li>
+                      <li>Dal Tadka (Double Fried Jeera)</li>
+                      <li>Jeera Rice & Soft Ghee Phulka</li>
+                      <li>Curd, Salad & <strong>Warm Gulab Jamun</strong></li>
+                    </ul>
+                  </td>
+                  <td data-meal="Snacks">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Crispy Veg Samosa (2 pcs)</strong></li>
+                      <li>Mint Chutney & Saunth</li>
+                      <li>Ginger Cardamom Tea</li>
+                    </ul>
+                  </td>
+                  <td data-meal="Dinner">
+                    <ul style="font-size: 0.875rem; line-height: 1.8;">
+                      <li><strong>Mixed Vegetable Korma</strong></li>
+                      <li>Yellow Moong Dal</li>
+                      <li>Steamed Rice & Tawa Roti</li>
+                      <li>Chilled Cut Watermelon Slices</li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border: none; padding-top: 0;">
+        <div>&copy; 2026 MessMate - Weekly Menu Schedule. All diets monitored by Mess Committee.</div>
+        <div><a href="today-menu.html" style="color: var(--primary-light);">Check Today's Live Menu &rarr;</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
