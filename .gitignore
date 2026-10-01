@@ -8,3 +8,5 @@ dist/
 
 backend/db.sqlite3
 database/messmate.db
+
+.firebase/
