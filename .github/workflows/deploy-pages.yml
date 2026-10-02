@@ -8,9 +8,18 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   deploy:
+    environment:
+      name: github-pages
+      url: https://sandeepreddy2488-alt.github.io/messmate/
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
