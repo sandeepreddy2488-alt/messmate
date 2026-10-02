@@ -1,10 +1,11 @@
 # MessMate - Full-Stack Hostel Mess Management System
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-messmate--77b77.web.app-brightgreen?style=for-the-badge&logo=firebase)](https://messmate-77b77.web.app)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Firebase_Hosting-brightgreen?style=for-the-badge&logo=firebase)](https://messmate-77b77.web.app)
+[![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Live-success?style=for-the-badge&logo=github)](https://sandeepreddy2488-alt.github.io/messmate/)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?style=for-the-badge&logo=github)](https://github.com/sandeepreddy2488-alt/messmate)
-[![Deployment](https://img.shields.io/badge/Deployment-Firebase_Hosting-orange?style=for-the-badge&logo=google-cloud)](https://messmate-77b77.web.app)
 
-> 🚀 **Live Website URL:** **[https://messmate-77b77.web.app](https://messmate-77b77.web.app)**  
+> 🚀 **Live Firebase URL:** **[https://messmate-77b77.web.app](https://messmate-77b77.web.app)**  
+> 🌐 **GitHub Pages URL:** **[https://sandeepreddy2488-alt.github.io/messmate/](https://sandeepreddy2488-alt.github.io/messmate/)**  
 > 🔗 **Alternative Mirror:** **[https://messmate-77b77.firebaseapp.com](https://messmate-77b77.firebaseapp.com)**
 
 MessMate is a college and hostel mess management web application rebuilt with a decoupled **React.js** frontend, a **Python / Django + Django REST Framework** backend, and a **PostgreSQL** database.
