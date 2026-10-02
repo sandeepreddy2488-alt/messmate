@@ -330,13 +330,13 @@ export default function ChefReviews() {
             {reviews.map(review => (
               <div
                 key={review.id}
-                className="card"
+                className="card interactive-card"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '0.75rem',
                   padding: '1.25rem',
-                  borderRadius: 'var(--radius-md)',
+                  borderRadius: 'var(--radius-lg)',
                   boxShadow: 'var(--shadow-sm)',
                   border: '1px solid var(--border)'
                 }}

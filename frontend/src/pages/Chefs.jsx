@@ -336,14 +336,14 @@ export default function Chefs() {
               return (
                 <div
                   key={chef.id}
-                  className="card"
+                  className="card interactive-card"
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
                     padding: 0,
                     overflow: 'hidden',
-                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                    border: isHeadChef ? '1.5px solid rgba(5, 150, 105, 0.4)' : '1px solid var(--border)'
+                    border: isHeadChef ? '1.5px solid rgba(5, 150, 105, 0.4)' : '1px solid var(--border)',
+                    borderRadius: 'var(--radius-lg)'
                   }}
                 >
                   {/* Card Top Banner / Photo Header */}

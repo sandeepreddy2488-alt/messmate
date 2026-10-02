@@ -148,82 +148,92 @@ export default function Home() {
             </Link>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
             {meals.map((meal) => {
               const isActive = meal.status === 'Active';
               const isServed = meal.status === 'Served';
-              const mealImg = meal.themeImage || MEAL_THEME_IMAGES[meal.id] || MEAL_THEME_IMAGES[meal.name];
+              const mealImg = meal.themeImage || MEAL_THEME_IMAGES[meal.id] || MEAL_THEME_IMAGES[meal.name] || MEAL_THEME_IMAGES.lunch;
+              const emojis = { Breakfast: '🍳', Lunch: '🍛', Snacks: '🥤', Dinner: '🍽️' };
 
               return (
                 <div
                   key={meal.id}
-                  className="card"
+                  className="card interactive-card"
                   style={{
                     padding: 0,
                     overflow: 'hidden',
                     display: 'flex',
                     flexDirection: 'column',
                     background: '#ffffff',
-                    ...(isActive ? { borderColor: 'var(--primary)', boxShadow: 'var(--shadow-md)' } : {})
+                    borderRadius: 'var(--radius-lg)',
+                    border: isActive ? '2px solid var(--primary)' : '1px solid var(--border)',
+                    boxShadow: isActive ? '0 8px 20px -2px rgba(16, 185, 129, 0.18)' : 'var(--shadow-sm)'
                   }}
                 >
                   {/* Subtle Food Visual Header */}
                   <div style={{
                     position: 'relative',
-                    height: '110px',
+                    height: '115px',
                     overflow: 'hidden',
                     backgroundColor: 'var(--bg-subtle)'
                   }}>
                     <img
                       src={mealImg}
                       alt={meal.name}
+                      loading="lazy"
                       style={{
                         width: '100%',
                         height: '100%',
                         objectFit: 'cover',
-                        display: 'block'
+                        display: 'block',
+                        transition: 'transform 0.4s ease'
+                      }}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
                       }}
                     />
                     <div style={{
                       position: 'absolute',
                       inset: 0,
-                      background: 'linear-gradient(to top, rgba(15, 23, 42, 0.65) 0%, rgba(15, 23, 42, 0.15) 55%, transparent 100%)'
+                      background: 'linear-gradient(to top, rgba(15, 23, 42, 0.72) 0%, rgba(15, 23, 42, 0.15) 60%, transparent 100%)'
                     }} />
                     <div style={{
                       position: 'absolute',
-                      bottom: '0.55rem',
-                      left: '0.75rem',
-                      right: '0.75rem',
+                      bottom: '0.65rem',
+                      left: '0.85rem',
+                      right: '0.85rem',
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center'
                     }}>
                       <span style={{
-                        fontWeight: 700,
-                        fontSize: '0.95rem',
+                        fontWeight: 800,
+                        fontSize: '1.05rem',
                         color: '#ffffff',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.4rem',
-                        textShadow: '0 1px 3px rgba(0,0,0,0.7)'
+                        gap: '0.45rem',
+                        textShadow: '0 2px 4px rgba(0,0,0,0.6)'
                       }}>
-                        <i className={`fa-solid ${meal.icon}`}></i> {meal.name}
+                        <span>{emojis[meal.name] || '🍽️'}</span>
+                        <span>{meal.name}</span>
                       </span>
                       {isActive ? (
-                        <span className="badge badge-live" style={{ fontSize: '0.7rem' }}>Active</span>
+                        <span className="badge badge-live" style={{ fontSize: '0.7rem' }}>Serving</span>
                       ) : isServed ? (
-                        <span className="status-badge status-resolved" style={{ fontSize: '0.7rem' }}>Served</span>
+                        <span className="badge badge-served" style={{ fontSize: '0.7rem' }}>Served</span>
                       ) : (
-                        <span className="status-badge status-in-progress" style={{ fontSize: '0.7rem' }}>Upcoming</span>
+                        <span className="badge badge-upcoming" style={{ fontSize: '0.7rem' }}>Upcoming</span>
                       )}
                     </div>
                   </div>
 
-                  <div style={{ padding: '0.9rem 1.1rem 1.15rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                      <i className="fa-regular fa-clock"></i> {meal.timeDisplay}
+                  <div style={{ padding: '1rem 1.15rem 1.25rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                      <i className="fa-regular fa-clock" style={{ color: isActive ? 'var(--primary)' : 'var(--text-light)' }}></i>
+                      <span>{meal.timeDisplay}</span>
                     </div>
-                    <p style={{ fontSize: '0.875rem', margin: 0, color: 'var(--text-body)', lineHeight: 1.5 }}>
+                    <p style={{ fontSize: '0.875rem', margin: 0, color: 'var(--text-body)', lineHeight: 1.5, flex: 1 }}>
                       {meal.menuItems}
                     </p>
                   </div>

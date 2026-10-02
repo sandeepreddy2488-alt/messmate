@@ -3,7 +3,8 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     StudentViewSet, MenuViewSet, FoodItemViewSet, RatingViewSet, FeedbackViewSet,
     ComplaintViewSet, ChefViewSet, ChefRatingViewSet, ChefComplaintViewSet,
-    MealAttendanceViewSet, DashboardStatsView, AuthLoginView, SetupAdminView
+    MealAttendanceViewSet, DashboardStatsView, AuthLoginView, SetupAdminView,
+    StudentRegisterView
 )
 
 router = DefaultRouter()
@@ -24,4 +25,7 @@ urlpatterns = [
     path('stats/', DashboardStatsView.as_view(), name='dashboard-stats'),
     path('auth/login/', AuthLoginView.as_view(), name='auth-login'),
     path('auth/setup-admin/', SetupAdminView.as_view(), name='auth-setup-admin'),
+    path('student/register/', StudentRegisterView.as_view(), name='student-register'),
+    path('auth/register/', StudentRegisterView.as_view(), name='auth-register'),
+    path('auth/student/register/', StudentRegisterView.as_view(), name='auth-student-register'),
 ]

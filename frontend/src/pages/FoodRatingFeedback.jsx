@@ -69,7 +69,7 @@ export default function FoodRatingFeedback() {
         tags: selectedTags.join(', ')
       });
 
-      setToastMessage('Feedback and ratings recorded in PostgreSQL database!');
+      setToastMessage('Feedback and ratings recorded in database!');
       setComment('');
       fetchFeedback();
       setTimeout(() => setToastMessage(''), 4000);
@@ -82,10 +82,19 @@ export default function FoodRatingFeedback() {
     }
   };
 
+  const mealButtons = [
+    { name: 'Breakfast', emoji: '🍳' },
+    { name: 'Lunch', emoji: '🍛' },
+    { name: 'Snacks', emoji: '🥤' },
+    { name: 'Dinner', emoji: '🍽️' },
+  ];
+
   return (
     <div>
       {/* Page Header */}
-      <div className="page-header">
+      <div className="page-header" style={{
+        background: 'linear-gradient(135deg, rgba(240, 253, 244, 0.95) 0%, rgba(255, 255, 255, 0.92) 100%), url(/images/menu/hero_dining.jpg) center/cover no-repeat'
+      }}>
         <div className="container page-header-content">
           <div>
             <div className="breadcrumb">
@@ -93,8 +102,17 @@ export default function FoodRatingFeedback() {
               <i className="fa-solid fa-chevron-right" style={{ fontSize: '0.7rem' }}></i>
               <span>Food Rating & Feedback</span>
             </div>
-            <h1>Daily Food Rating & Feedback</h1>
+            <h1>Daily Food Rating & Reviews</h1>
             <p className="lead" style={{ margin: 0 }}>Every review directly shapes the mess contractor scorecards</p>
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <Link to="/today-menu" className="btn btn-outline">
+              <i className="fa-solid fa-utensils"></i> View Today's Menu
+            </Link>
+            <Link to="/chefs" className="btn btn-outline-primary">
+              <i className="fa-solid fa-kitchen-set"></i> Kitchen Chefs
+            </Link>
           </div>
         </div>
       </div>
@@ -104,50 +122,59 @@ export default function FoodRatingFeedback() {
           <div className="toast-fixed">
             <i className="fa-solid fa-circle-check" style={{ color: 'var(--primary)', fontSize: '1.25rem' }}></i>
             <div>
-              <h4 style={{ fontSize: '0.9rem', margin: 0 }}>Success</h4>
+              <h4 style={{ fontSize: '0.9rem', margin: 0 }}>Review Submitted</h4>
               <p style={{ fontSize: '0.825rem', color: 'var(--text-muted)', margin: 0 }}>{toastMessage}</p>
             </div>
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 0.85fr', gap: '2rem' }}>
           {/* Form */}
-          <div className="card">
+          <div className="card" style={{ borderRadius: 'var(--radius-xl)' }}>
             <div className="card-header">
               <div className="card-title">
                 <i className="fa-solid fa-pen-to-square" style={{ color: 'var(--primary)' }}></i>
                 Submit Meal Feedback
               </div>
-              <span className="badge badge-primary">Django REST Form</span>
+              <span className="badge badge-primary">Student Review</span>
             </div>
 
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label className="form-label">Which meal are you reviewing?</label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
-                  {['Breakfast', 'Lunch', 'Snacks', 'Dinner'].map((m) => (
+                  {mealButtons.map((m) => (
                     <button
-                      key={m}
+                      key={m.name}
                       type="button"
-                      onClick={() => setMeal(m)}
-                      className={`btn ${meal === m ? 'btn-primary' : 'btn-outline'} btn-sm`}
+                      onClick={() => setMeal(m.name)}
+                      className={`btn ${meal === m.name ? 'btn-primary' : 'btn-outline'} btn-sm`}
+                      style={{ padding: '0.55rem 0.4rem', fontSize: '0.85rem' }}
                     >
-                      {m}
+                      <span style={{ marginRight: '0.25rem' }}>{m.emoji}</span>
+                      <span>{m.name}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Overall Star Rating */}
-              <div style={{ background: 'var(--bg-main)', padding: '1.25rem', borderRadius: 'var(--radius-md)', textAlign: 'center', marginBottom: '1.5rem' }}>
-                <label className="form-label" style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>
+              <div style={{
+                background: 'linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)',
+                padding: '1.5rem',
+                borderRadius: 'var(--radius-lg)',
+                textAlign: 'center',
+                marginBottom: '1.5rem',
+                border: '1px solid var(--primary-border)'
+              }}>
+                <label className="form-label" style={{ fontSize: '1.05rem', marginBottom: '0.5rem', color: 'var(--primary-dark)' }}>
                   Overall Meal Satisfaction
                 </label>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <StarRating value={overallRating} onChange={setOverallRating} size="2.2rem" />
+                  <StarRating value={overallRating} onChange={setOverallRating} size="2.4rem" />
                 </div>
-                <div style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 700, marginTop: '0.4rem' }}>
-                  {overallRating}/5 Stars
+                <div style={{ fontSize: '0.9rem', color: 'var(--primary-dark)', fontWeight: 700, marginTop: '0.5rem' }}>
+                  {overallRating} of 5 Stars
                 </div>
               </div>
 
@@ -155,36 +182,36 @@ export default function FoodRatingFeedback() {
               <div style={{ marginBottom: '1.5rem' }}>
                 <label className="form-label">Rate Specific Quality Aspects</label>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0', borderBottom: '1px dashed var(--border)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.65rem 0', borderBottom: '1px dashed var(--border)' }}>
                   <div>
                     <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Taste & Flavor</div>
-                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Spices and cooking freshness</div>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Spices and fresh cooking</div>
                   </div>
-                  <StarRating value={tasteRating} onChange={setTasteRating} size="1.2rem" />
+                  <StarRating value={tasteRating} onChange={setTasteRating} size="1.25rem" />
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0', borderBottom: '1px dashed var(--border)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.65rem 0', borderBottom: '1px dashed var(--border)' }}>
                   <div>
                     <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Hygiene & Cleanliness</div>
-                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Counters and clean plates</div>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Serving counters and plates</div>
                   </div>
-                  <StarRating value={hygieneRating} onChange={setHygieneRating} size="1.2rem" />
+                  <StarRating value={hygieneRating} onChange={setHygieneRating} size="1.25rem" />
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0', borderBottom: '1px dashed var(--border)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.65rem 0', borderBottom: '1px dashed var(--border)' }}>
                   <div>
                     <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Serving Temperature</div>
-                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Hot rotis and warm curries</div>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Hot phulkas and warm curries</div>
                   </div>
-                  <StarRating value={tempRating} onChange={setTempRating} size="1.2rem" />
+                  <StarRating value={tempRating} onChange={setTempRating} size="1.25rem" />
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.65rem 0' }}>
                   <div>
                     <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Portion & Refill Speed</div>
-                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Availability of prompt second helpings</div>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Promptness of second helpings</div>
                   </div>
-                  <StarRating value={portionRating} onChange={setPortionRating} size="1.2rem" />
+                  <StarRating value={portionRating} onChange={setPortionRating} size="1.25rem" />
                 </div>
               </div>
 
@@ -201,11 +228,12 @@ export default function FoodRatingFeedback() {
                         background: selectedTags.includes(tag) ? 'var(--primary-soft)' : 'var(--bg-subtle)',
                         border: selectedTags.includes(tag) ? '1px solid var(--primary)' : '1px solid var(--border)',
                         color: selectedTags.includes(tag) ? 'var(--primary-dark)' : 'var(--text-body)',
-                        padding: '0.35rem 0.75rem',
+                        padding: '0.4rem 0.85rem',
                         borderRadius: 'var(--radius-full)',
                         fontSize: '0.825rem',
                         cursor: 'pointer',
-                        fontWeight: selectedTags.includes(tag) ? 600 : 400
+                        fontWeight: selectedTags.includes(tag) ? 600 : 400,
+                        transition: 'var(--transition-fast)'
                       }}
                     >
                       {tag}
@@ -244,39 +272,47 @@ export default function FoodRatingFeedback() {
           {/* Reviews Feed Column */}
           <div>
             {/* Scorecard */}
-            <div className="card" style={{ marginBottom: '1.75rem' }}>
+            <div className="card" style={{ marginBottom: '1.75rem', borderRadius: 'var(--radius-xl)' }}>
               <div className="card-header">
                 <div className="card-title">
                   <i className="fa-solid fa-chart-simple" style={{ color: 'var(--primary)' }}></i>
                   Mess Quality Scorecard
                 </div>
-                <span className="badge badge-primary">PostgreSQL Live</span>
+                <span className="badge badge-primary">Live Ratings</span>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
                 <div>
                   <div style={{ fontSize: '3rem', fontWeight: 800, color: 'var(--text-dark)', lineHeight: 1 }}>
                     {reviewsData.stats?.avg_rating || 4.3}
                   </div>
-                  <div style={{ color: 'var(--accent)', fontSize: '0.95rem', marginTop: '0.25rem' }}>
-                    <StarRating value={Math.round(reviewsData.stats?.avg_rating || 4.3)} readOnly size="0.95rem" />
+                  <div style={{ color: 'var(--accent)', fontSize: '1rem', marginTop: '0.35rem' }}>
+                    <StarRating value={Math.round(reviewsData.stats?.avg_rating || 4.3)} readOnly size="1rem" />
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                    Based on {reviewsData.stats?.total_reviews || 4} verified student ratings
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                    Based on {reviewsData.stats?.total_reviews || 4} student reviews
                   </div>
                 </div>
 
-                <div style={{ flex: 1, fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-                  <div>Taste: <strong>{reviewsData.stats?.avg_taste || 4.4} / 5.0</strong></div>
-                  <div>Hygiene: <strong>{reviewsData.stats?.avg_hygiene || 4.7} / 5.0</strong></div>
-                  <div>Temperature: <strong>{reviewsData.stats?.avg_temperature || 4.1} / 5.0</strong></div>
-                  <div>Refill Speed: <strong>{reviewsData.stats?.avg_portion || 4.2} / 5.0</strong></div>
+                <div style={{ flex: 1, fontSize: '0.825rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', minWidth: '160px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Taste:</span> <strong>{reviewsData.stats?.avg_taste || 4.4} / 5.0</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Hygiene:</span> <strong>{reviewsData.stats?.avg_hygiene || 4.7} / 5.0</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Temperature:</span> <strong>{reviewsData.stats?.avg_temperature || 4.1} / 5.0</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Refill Speed:</span> <strong>{reviewsData.stats?.avg_portion || 4.2} / 5.0</strong>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Community Reviews List */}
-            <div className="card">
+            {/* Community Reviews List with Empty State */}
+            <div className="card" style={{ borderRadius: 'var(--radius-xl)' }}>
               <div className="card-header">
                 <div className="card-title">
                   <i className="fa-solid fa-comments" style={{ color: 'var(--primary)' }}></i>
@@ -284,30 +320,71 @@ export default function FoodRatingFeedback() {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {(reviewsData.reviews || []).map((r) => (
-                  <div key={r.id} style={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '1.25rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                      <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>
-                        <i className="fa-solid fa-user-circle" style={{ color: 'var(--primary)' }}></i> {r.student_info || 'Hostel Resident'}
-                      </span>
-                      <StarRating value={r.rating || 5} readOnly size="0.8rem" />
-                    </div>
-                    <p style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}>
-                      "{r.comment}"
-                    </p>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                      {r.meal_type} • {r.created_at ? r.created_at.split('T')[0] : 'Today'}
-                    </div>
-
-                    {r.supervisor_reply && (
-                      <div style={{ background: 'var(--bg-main)', borderLeft: '3px solid var(--primary)', padding: '0.65rem 0.85rem', borderRadius: '0 var(--radius-sm) var(--radius-sm) 0', fontSize: '0.825rem', marginTop: '0.75rem' }}>
-                        <strong><i className="fa-solid fa-reply"></i> Mess Supervisor:</strong> {r.supervisor_reply}
-                      </div>
-                    )}
+              {(!reviewsData.reviews || reviewsData.reviews.length === 0) ? (
+                /* Empty state per Requirement 10 */
+                <div style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
+                  <div style={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '50%',
+                    background: 'var(--yellow-soft)',
+                    color: 'var(--yellow)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.75rem',
+                    marginBottom: '1rem'
+                  }}>
+                    <i className="fa-solid fa-star-half-stroke"></i>
                   </div>
-                ))}
-              </div>
+                  <h4 style={{ fontSize: '1.1rem', marginBottom: '0.35rem' }}>No Reviews Yet</h4>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', maxWidth: '300px', margin: '0 auto' }}>
+                    Be the first resident to submit today's meal review using the form on the left!
+                  </p>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {reviewsData.reviews.map((r) => (
+                    <div
+                      key={r.id}
+                      className="interactive-card"
+                      style={{
+                        background: '#ffffff',
+                        border: '1px solid var(--border)',
+                        borderRadius: 'var(--radius-md)',
+                        padding: '1.15rem'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                        <span style={{ fontWeight: 700, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                          <i className="fa-solid fa-circle-user" style={{ color: 'var(--primary)' }}></i>
+                          <span>{r.student_info || 'Hostel Resident'}</span>
+                        </span>
+                        <StarRating value={r.rating || 5} readOnly size="0.85rem" />
+                      </div>
+                      <p style={{ fontSize: '0.875rem', marginBottom: '0.35rem', color: 'var(--text-body)', fontStyle: 'italic' }}>
+                        "{r.comment}"
+                      </p>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                        {r.meal_type} • {r.created_at ? r.created_at.split('T')[0] : 'Today'}
+                      </div>
+
+                      {r.supervisor_reply && (
+                        <div style={{
+                          background: 'var(--primary-soft)',
+                          borderLeft: '3px solid var(--primary)',
+                          padding: '0.65rem 0.85rem',
+                          borderRadius: '0 var(--radius-sm) var(--radius-sm) 0',
+                          fontSize: '0.825rem',
+                          marginTop: '0.75rem'
+                        }}>
+                          <strong><i className="fa-solid fa-reply"></i> Supervisor:</strong> {r.supervisor_reply}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

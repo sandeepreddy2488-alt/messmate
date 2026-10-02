@@ -16,6 +16,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import Chefs from './pages/Chefs';
 import ChefReviews from './pages/ChefReviews';
 import ChefComplaints from './pages/ChefComplaints';
+import StudentRegister from './pages/StudentRegister';
 
 export default function App() {
   return (
@@ -27,6 +28,8 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<StudentRegister />} />
+              <Route path="/student-register" element={<StudentRegister />} />
               <Route path="/dashboard" element={<StudentDashboard />} />
               <Route path="/today-menu" element={<TodayMenu />} />
               <Route path="/weekly-menu" element={<WeeklyMenu />} />

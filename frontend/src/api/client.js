@@ -116,6 +116,7 @@ export const api = {
 
   // Auth
   login: (credentials) => client.post('/auth/login/', credentials),
+  registerStudent: (data) => client.post('/student/register/', data),
   setupAdmin: (data) => client.post('/auth/setup-admin/', data),
 };
 

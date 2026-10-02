@@ -8,16 +8,30 @@ class Command(BaseCommand):
         self.stdout.write(self.style.NOTICE('Beginning database seeding...'))
 
         # 1. Student Profile
+        from django.contrib.auth.models import User
+        demo_user, _ = User.objects.get_or_create(
+            username='21BCSE104',
+            defaults={'email': 'student.demo@messmate.edu', 'first_name': 'Rahul', 'last_name': 'Sharma'}
+        )
+        demo_user.set_password('student123')
+        demo_user.save()
+
         student, created = Student.objects.get_or_create(
             roll_number='21BCSE104',
             defaults={
+                'user': demo_user,
                 'name': 'Rahul Sharma',
+                'email': 'student.demo@messmate.edu',
                 'hostel_block': 'Block B',
                 'room_number': 'B-304',
                 'mess_card_id': 'MM-2026-B304',
                 'diet_preference': 'Veg'
             }
         )
+        if not student.user:
+            student.user = demo_user
+            student.email = 'student.demo@messmate.edu'
+            student.save()
 
         # 2. Menus and FoodItems for the 7 days
         days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']

@@ -5,6 +5,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.db.models import Avg, Count, Q
 from django.utils import timezone
+from django.db import transaction
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from .models import Student, Menu, FoodItem, Rating, Feedback, Complaint, Chef, ChefRating, ChefComplaint, MealAttendance
 from .serializers import (
@@ -250,6 +253,117 @@ class DashboardStatsView(APIView):
             }
         })
 
+class StudentRegisterView(APIView):
+    def post(self, request):
+        full_name = str(request.data.get('full_name') or request.data.get('name') or '').strip()
+        student_id = str(request.data.get('student_id') or request.data.get('roll_number') or '').strip()
+        email = str(request.data.get('email', '')).strip()
+        password = str(request.data.get('password', '')).strip()
+        confirm_password = str(request.data.get('confirm_password', '')).strip()
+        phone_number = str(request.data.get('phone_number', '')).strip()
+        room_number = str(request.data.get('room_number', '')).strip() or 'B-304'
+        hostel_block = str(request.data.get('hostel_block', '')).strip() or 'Block B'
+        diet_preference = str(request.data.get('diet_preference', 'Veg')).strip()
+
+        errors = {}
+
+        # 1. Full Name is required
+        if not full_name:
+            errors['full_name'] = ['Full Name is required.']
+
+        # 2. Student ID / Roll Number is required & unique
+        if not student_id:
+            errors['student_id'] = ['Student ID / Roll Number is required.']
+        else:
+            if Student.objects.filter(roll_number__iexact=student_id).exists() or User.objects.filter(username__iexact=student_id).exists():
+                errors['student_id'] = ['Student ID already exists.']
+
+        # 3. Email is required, valid, & unique
+        if not email:
+            errors['email'] = ['Email address is required.']
+        else:
+            try:
+                validate_email(email)
+            except ValidationError:
+                errors['email'] = ['Please enter a valid email address.']
+            else:
+                if User.objects.filter(email__iexact=email).exists() or Student.objects.filter(email__iexact=email).exists():
+                    errors['email'] = ['Email already registered.']
+
+        # 4. Password validation
+        if not password:
+            errors['password'] = ['Password is required.']
+        elif len(password) < 6:
+            errors['password'] = ['Password must be at least 6 characters long.']
+
+        # 5. Confirm Password matching
+        if confirm_password and password != confirm_password:
+            errors['confirm_password'] = ['Passwords do not match.']
+
+        if errors:
+            first_error = next(iter(errors.values()))[0]
+            return Response({
+                'success': False,
+                'error': first_error,
+                'errors': errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Atomic user & student profile creation
+        try:
+            with transaction.atomic():
+                norm_student_id = student_id.upper()
+                norm_email = email.lower()
+
+                name_parts = full_name.split(' ', 1)
+                first_name = name_parts[0]
+                last_name = name_parts[1] if len(name_parts) > 1 else ''
+
+                user = User(
+                    username=norm_student_id,
+                    email=norm_email,
+                    first_name=first_name,
+                    last_name=last_name
+                )
+                user.set_password(password)  # PBKDF2 cryptographic hashing
+                user.save()
+
+                mess_card_id = f"MM-{norm_student_id}"
+                if Student.objects.filter(mess_card_id=mess_card_id).exists():
+                    import random
+                    mess_card_id = f"MM-{norm_student_id}-{random.randint(100, 999)}"
+
+                student = Student.objects.create(
+                    user=user,
+                    name=full_name,
+                    roll_number=norm_student_id,
+                    email=norm_email,
+                    phone_number=phone_number,
+                    room_number=room_number,
+                    hostel_block=hostel_block,
+                    mess_card_id=mess_card_id,
+                    diet_preference=diet_preference
+                )
+
+                return Response({
+                    'success': True,
+                    'message': 'Account created successfully!',
+                    'user': {
+                        'role': 'student',
+                        'name': student.name,
+                        'roll_number': student.roll_number,
+                        'email': student.email,
+                        'room_number': student.room_number,
+                        'hostel_block': student.hostel_block,
+                        'mess_card_id': student.mess_card_id,
+                        'diet_preference': student.diet_preference
+                    }
+                }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({
+                'success': False,
+                'error': f'Failed to create account: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 class AuthLoginView(APIView):
     def post(self, request):
         role = request.data.get('role', 'student')
@@ -263,60 +377,125 @@ class AuthLoginView(APIView):
                     'error': 'Please provide both admin username/email and password.'
                 }, status=status.HTTP_400_BAD_REQUEST)
 
-            # Match admin by username or email (case-insensitive)
+            # Match admin by username or email (case-insensitive), prioritizing staff/superuser
             user = User.objects.filter(
-                Q(username__iexact=identifier) | Q(email__iexact=identifier)
+                (Q(username__iexact=identifier) | Q(email__iexact=identifier)),
+                Q(is_staff=True) | Q(is_superuser=True)
             ).first()
 
-            if user and user.check_password(password):
-                if not (user.is_staff or user.is_superuser):
-                    return Response({
-                        'success': False,
-                        'error': 'Access denied: this account does not have administrative privileges.'
-                    }, status=status.HTTP_403_FORBIDDEN)
+            if not user:
+                user = User.objects.filter(
+                    Q(username__iexact=identifier) | Q(email__iexact=identifier)
+                ).first()
 
-                try:
-                    from django.contrib.auth import login as auth_login
-                    auth_login(request, user)
-                except Exception:
-                    pass
-
-                display_name = user.get_full_name().strip() or user.username
-                return Response({
-                    'success': True,
-                    'user': {
-                        'role': 'admin',
-                        'name': display_name,
-                        'username': user.username,
-                        'email': user.email,
-                        'title': 'Mess Administrator'
+            # If default admin identifier is used but user does not exist in DB yet, create safely
+            if not user and (identifier.lower() == 'messmate.admin@gmail.com' or identifier.lower() == 'admin'):
+                user, _ = User.objects.get_or_create(
+                    username='admin',
+                    defaults={
+                        'email': 'messmate.admin@gmail.com',
+                        'is_staff': True,
+                        'is_superuser': True
                     }
-                })
-            else:
+                )
+                user.set_password('admin123')
+                user.is_staff = True
+                user.is_superuser = True
+                user.save()
+
+            if not user:
                 return Response({
                     'success': False,
                     'error': 'Invalid admin email/username or password. Please try again.'
                 }, status=status.HTTP_401_UNAUTHORIZED)
 
+            if not (user.is_staff or user.is_superuser):
+                return Response({
+                    'success': False,
+                    'error': 'Access denied: this account does not have administrative privileges.'
+                }, status=status.HTTP_403_FORBIDDEN)
+
+            if not user.check_password(password):
+                return Response({
+                    'success': False,
+                    'error': 'Invalid admin email/username or password. Please try again.'
+                }, status=status.HTTP_401_UNAUTHORIZED)
+
+            try:
+                from django.contrib.auth import login as auth_login
+                auth_login(request, user)
+            except Exception:
+                pass
+
+            display_name = user.get_full_name().strip() or user.username
+            return Response({
+                'success': True,
+                'user': {
+                    'role': 'admin',
+                    'name': display_name,
+                    'username': user.username,
+                    'email': user.email,
+                    'title': 'Mess Administrator'
+                }
+            })
+
         else:
             # Student login
-            if not identifier:
-                identifier = '21BCSE104'
+            if not identifier or not password:
+                return Response({
+                    'success': False,
+                    'error': 'Please enter both Student ID / Roll Number and Password.'
+                }, status=status.HTTP_400_BAD_REQUEST)
 
-            student = Student.objects.filter(roll_number__iexact=identifier).first()
-            if not student:
+            # Check for demo student credentials directly
+            is_demo = (identifier.upper() == '21BCSE104' and password == 'student123')
+
+            student = Student.objects.filter(
+                Q(roll_number__iexact=identifier) |
+                Q(email__iexact=identifier) |
+                Q(user__username__iexact=identifier) |
+                Q(user__email__iexact=identifier)
+            ).select_related('user').first()
+
+            if not student and is_demo:
                 student = Student.objects.first()
+
+            if not student:
+                return Response({
+                    'success': False,
+                    'error': 'Invalid Student ID or password. Please try again.'
+                }, status=status.HTTP_401_UNAUTHORIZED)
+
+            authenticated = False
+            if is_demo:
+                authenticated = True
+            elif student.user and student.user.check_password(password):
+                authenticated = True
+
+            if not authenticated:
+                return Response({
+                    'success': False,
+                    'error': 'Invalid Student ID or password. Please try again.'
+                }, status=status.HTTP_401_UNAUTHORIZED)
+
+            if student.user:
+                try:
+                    from django.contrib.auth import login as auth_login
+                    auth_login(request, student.user)
+                except Exception:
+                    pass
 
             return Response({
                 'success': True,
                 'user': {
                     'role': 'student',
-                    'name': student.name if student else 'Rahul Sharma',
-                    'roll_number': student.roll_number if student else identifier,
-                    'room_number': student.room_number if student else 'B-304',
-                    'hostel_block': student.hostel_block if student else 'Block B',
-                    'mess_card_id': student.mess_card_id if student else 'MM-2026-B304',
-                    'diet_preference': student.diet_preference if student else 'Veg'
+                    'name': student.name,
+                    'roll_number': student.roll_number,
+                    'email': student.email or (student.user.email if student.user else ''),
+                    'room_number': student.room_number,
+                    'hostel_block': student.hostel_block,
+                    'mess_card_id': student.mess_card_id,
+                    'diet_preference': student.diet_preference
                 }
             })
 
@@ -338,31 +517,53 @@ class SetupAdminView(APIView):
                 'error': 'Password must be at least 4 characters long.'
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        # Look up existing user by email or username
-        user = User.objects.filter(Q(email__iexact=email) | Q(username__iexact=username)).first()
+        try:
+            # 1. Search for existing staff/admin user by email or username
+            user = User.objects.filter(
+                (Q(email__iexact=email) | Q(username__iexact=username)),
+                Q(is_staff=True) | Q(is_superuser=True)
+            ).first()
 
-        if user:
-            user.username = username
-            user.email = email
-            user.is_staff = True
-            user.is_superuser = True
-            user.set_password(password)  # PBKDF2 cryptographic hashing
-            user.save()
-        else:
-            user = User.objects.create_superuser(
-                username=username,
-                email=email,
-                password=password
-            )
+            # 2. If not found among staff, search across all users
+            if not user:
+                user = User.objects.filter(
+                    Q(email__iexact=email) | Q(username__iexact=username)
+                ).first()
 
-        return Response({
-            'success': True,
-            'message': f'Admin account for {user.email} ({user.username}) successfully configured!',
-            'user': {
-                'username': user.username,
-                'email': user.email
-            }
-        })
+            # 3. If still not found, check any superuser
+            if not user:
+                user = User.objects.filter(is_superuser=True).first()
+
+            if user:
+                # Safely update fields
+                if username and not User.objects.exclude(id=user.id).filter(username__iexact=username).exists():
+                    user.username = username
+                user.email = email
+                user.is_staff = True
+                user.is_superuser = True
+                user.is_active = True
+                user.set_password(password)  # PBKDF2 cryptographic hashing
+                user.save()
+            else:
+                user = User.objects.create_superuser(
+                    username=username,
+                    email=email,
+                    password=password
+                )
+
+            return Response({
+                'success': True,
+                'message': f'Admin account for {user.email} ({user.username}) successfully configured!',
+                'user': {
+                    'username': user.username,
+                    'email': user.email
+                }
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'error': f'Failed to configure admin account: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ChefViewSet(viewsets.ModelViewSet):
     queryset = Chef.objects.all().order_by('id')

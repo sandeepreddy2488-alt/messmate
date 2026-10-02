@@ -46,7 +46,7 @@ export default function Complaints() {
       });
 
       const newTicketId = res.data?.ticket_id || 'CMP-NEW';
-      setToastMessage(`Grievance #${newTicketId} logged in PostgreSQL database!`);
+      setToastMessage(`Grievance #${newTicketId} logged in database!`);
       setDescription('');
       fetchComplaints();
       setTimeout(() => setToastMessage(''), 5000);
@@ -61,7 +61,9 @@ export default function Complaints() {
 
   return (
     <div>
-      <div className="page-header">
+      <div className="page-header" style={{
+        background: 'linear-gradient(135deg, rgba(240, 253, 244, 0.95) 0%, rgba(255, 255, 255, 0.92) 100%), url(/images/menu/hero_dining.jpg) center/cover no-repeat'
+      }}>
         <div className="container page-header-content">
           <div>
             <div className="breadcrumb">
@@ -73,9 +75,11 @@ export default function Complaints() {
             <p className="lead" style={{ margin: 0 }}>Report hygiene issues, food shortages, or service faults with real-time tracking.</p>
           </div>
 
-          <span className="badge badge-veg" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}>
-            <i className="fa-solid fa-clock-rotate-left"></i> 24-Hour SLA Commitment
-          </span>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+            <span className="badge badge-veg" style={{ padding: '0.55rem 1.15rem', fontSize: '0.85rem' }}>
+              <i className="fa-solid fa-clock-rotate-left"></i> 24-Hour SLA Commitment
+            </span>
+          </div>
         </div>
       </div>
 
@@ -84,7 +88,7 @@ export default function Complaints() {
           <div className="toast-fixed">
             <i className="fa-solid fa-circle-check" style={{ color: 'var(--primary)', fontSize: '1.25rem' }}></i>
             <div>
-              <h4 style={{ fontSize: '0.9rem', margin: 0 }}>Notice</h4>
+              <h4 style={{ fontSize: '0.9rem', margin: 0 }}>Grievance Logged</h4>
               <p style={{ fontSize: '0.825rem', color: 'var(--text-muted)', margin: 0 }}>{toastMessage}</p>
             </div>
           </div>
@@ -92,7 +96,7 @@ export default function Complaints() {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
           {/* Submission Form */}
-          <div className="card">
+          <div className="card" style={{ borderRadius: 'var(--radius-xl)' }}>
             <div className="card-header">
               <div className="card-title">
                 <i className="fa-solid fa-file-circle-exclamation" style={{ color: 'var(--danger)' }}></i>
@@ -146,14 +150,14 @@ export default function Complaints() {
                   >
                     <option value="Central Mess Hall 2 (Block B)">Central Mess Hall 2 (Block B)</option>
                     <option value="Central Mess Hall 1 (Block A)">Central Mess Hall 1 (Block A)</option>
-                    <option value="Dining Annexe">Girls Hostel Dining Annexe</option>
+                    <option value="Dining Annexe">Hostel Dining Annexe</option>
                   </select>
                 </div>
               </div>
 
               <div className="form-group">
                 <label className="form-label">Urgency Level</label>
-                <div style={{ display: 'flex', gap: '1.25rem' }}>
+                <div style={{ display: 'flex', gap: '1.25rem', padding: '0.4rem 0' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.875rem', cursor: 'pointer' }}>
                     <input
                       type="radio"
@@ -200,7 +204,7 @@ export default function Complaints() {
                 type="submit"
                 className="btn btn-primary btn-block btn-lg"
                 disabled={submitting}
-                style={{ backgroundColor: '#dc2626' }}
+                style={{ background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' }}
               >
                 <i className="fa-solid fa-bullhorn"></i> {submitting ? 'Submitting to Database...' : 'Submit Grievance Ticket'}
               </button>
@@ -209,60 +213,94 @@ export default function Complaints() {
 
           {/* Complaints Tracker List */}
           <div>
-            <div className="card">
+            <div className="card" style={{ borderRadius: 'var(--radius-xl)' }}>
               <div className="card-header">
                 <div className="card-title">
                   <i className="fa-solid fa-list-check" style={{ color: 'var(--primary)' }}></i>
                   My Grievance Tickets
                 </div>
-                <span className="status-badge status-resolved">PostgreSQL Queue</span>
+                <span className="status-badge status-resolved">Real-Time Queue</span>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {complaints.map((t) => (
-                  <div key={t.id || t.ticket_id} style={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '1.25rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                      <div style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                        <i className="fa-solid fa-ticket" style={{ color: t.status === 'Resolved' ? 'var(--primary)' : 'var(--danger)' }}></i>
-                        #{t.ticket_id}
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 400 }}>• {t.category}</span>
-                      </div>
-                      <span className={`status-badge ${t.status === 'Resolved' ? 'status-resolved' : t.status === 'In Progress' ? 'status-in-progress' : 'status-pending'}`}>
-                        {t.status}
-                      </span>
-                    </div>
-                    <p style={{ fontSize: '0.85rem', margin: '0 0 0.4rem 0' }}>
-                      <strong>Issue:</strong> {t.description}
-                    </p>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                      {t.hall} • {t.created_at ? t.created_at.split('T')[0] : 'Today'}
-                    </div>
-
-                    {t.resolution_note && (
-                      <div style={{
-                        background: '#f0fdf4',
-                        borderLeft: '3px solid #10b981',
-                        padding: '0.65rem 0.85rem',
-                        borderRadius: '0 var(--radius-sm) var(--radius-sm) 0',
-                        fontSize: '0.825rem',
-                        marginTop: '0.75rem',
-                        color: '#166534'
-                      }}>
-                        <strong><i className="fa-solid fa-wrench"></i> Resolution Note by Staff:</strong><br />
-                        {t.resolution_note}
-                      </div>
-                    )}
+              {complaints.length === 0 ? (
+                /* Empty state per Requirement 10 */
+                <div style={{ textAlign: 'center', padding: '3.5rem 1.5rem' }}>
+                  <div style={{
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '50%',
+                    background: 'var(--primary-soft)',
+                    color: 'var(--primary)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.75rem',
+                    marginBottom: '1rem'
+                  }}>
+                    <i className="fa-solid fa-shield-heart"></i>
                   </div>
-                ))}
-              </div>
+                  <h4 style={{ fontSize: '1.15rem', marginBottom: '0.35rem' }}>No Complaints Yet</h4>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', maxWidth: '320px', margin: '0 auto' }}>
+                    Great news! There are no outstanding dining complaints on file.
+                  </p>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {complaints.map((t) => (
+                    <div
+                      key={t.id || t.ticket_id}
+                      className="interactive-card"
+                      style={{
+                        background: '#ffffff',
+                        border: '1px solid var(--border)',
+                        borderRadius: 'var(--radius-md)',
+                        padding: '1.25rem'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                        <div style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                          <i className="fa-solid fa-ticket" style={{ color: t.status === 'Resolved' ? 'var(--primary)' : 'var(--danger)' }}></i>
+                          <span>#{t.ticket_id}</span>
+                          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 500 }}>• {t.category}</span>
+                        </div>
+                        <span className={`status-badge ${t.status === 'Resolved' ? 'status-resolved' : t.status === 'In Progress' ? 'status-in-progress' : 'status-pending'}`}>
+                          {t.status}
+                        </span>
+                      </div>
+                      <p style={{ fontSize: '0.875rem', margin: '0 0 0.5rem 0', color: 'var(--text-body)' }}>
+                        <strong>Issue:</strong> {t.description}
+                      </p>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                        {t.hall} • {t.created_at ? t.created_at.split('T')[0] : 'Today'}
+                      </div>
+
+                      {t.resolution_note && (
+                        <div style={{
+                          background: '#f0fdf4',
+                          borderLeft: '3px solid #10b981',
+                          padding: '0.65rem 0.85rem',
+                          borderRadius: '0 var(--radius-sm) var(--radius-sm) 0',
+                          fontSize: '0.825rem',
+                          marginTop: '0.75rem',
+                          color: '#166534'
+                        }}>
+                          <strong><i className="fa-solid fa-wrench"></i> Resolution Note by Staff:</strong><br />
+                          {t.resolution_note}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <div className="card" style={{ marginTop: '1.5rem', background: '#fff5f5', borderColor: '#fecaca' }}>
+            {/* Emergency Escalation Card */}
+            <div className="card" style={{ marginTop: '1.5rem', background: '#fff5f5', borderColor: '#fecaca', borderRadius: 'var(--radius-lg)' }}>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                 <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: '1.5rem', color: 'var(--danger)', marginTop: '0.2rem' }}></i>
                 <div>
                   <h4 style={{ color: '#991b1b', marginBottom: '0.25rem' }}>Emergency Escalation</h4>
-                  <p style={{ fontSize: '0.825rem', color: '#7f1d1d', margin: 0, lineHeight: '1.5' }}>
+                  <p style={{ fontSize: '0.825rem', color: '#7f1d1d', margin: 0, lineHeight: '1.55' }}>
                     If you spot an immediate safety hazard, food contamination, or emergency hygiene issue, call Chief Hostel Warden:
                     <strong> 080-2442-9900</strong>.
                   </p>

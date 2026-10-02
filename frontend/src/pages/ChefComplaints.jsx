@@ -573,13 +573,13 @@ export default function ChefComplaints() {
               return (
                 <div
                   key={item.id}
-                  className="card"
+                  className="card interactive-card"
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '0.85rem',
                     padding: '1.35rem',
-                    borderRadius: 'var(--radius-md)',
+                    borderRadius: 'var(--radius-lg)',
                     boxShadow: 'var(--shadow-sm)',
                     border: isPending ? '1.5px solid #fca5a5' : isResolved ? '1px solid #bbf7d0' : '1px solid var(--border)'
                   }}

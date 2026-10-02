@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../api/client';
 
 export default function Login() {
+  const [searchParams] = useSearchParams();
+  const registeredParam = searchParams.get('registered');
+  const studentIdParam = searchParams.get('student_id');
+
   const [activeTab, setActiveTab] = useState('student');
-  const [identifier, setIdentifier] = useState('21BCSE104');
-  const [password, setPassword] = useState('student123');
+  const [identifier, setIdentifier] = useState(studentIdParam || '21BCSE104');
+  const [password, setPassword] = useState(registeredParam ? '' : 'student123');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState(
+    registeredParam ? 'Account created successfully! Please sign in with your credentials.' : ''
+  );
 
   // Admin interactive setup state
   const [showSetup, setShowSetup] = useState(false);
@@ -32,7 +38,7 @@ export default function Login() {
       setPassword('student123');
     } else {
       setIdentifier('messmate.admin@gmail.com');
-      setPassword('');
+      setPassword('admin123');
     }
   };
 
@@ -119,314 +125,419 @@ export default function Login() {
 
   return (
     <div style={{
-      minHeight: 'calc(100vh - 4.5rem - 180px)',
+      minHeight: 'calc(100vh - 4.6rem - 180px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '3rem 1.5rem',
-      background: 'radial-gradient(circle at top right, #f0fdf4 0%, #f8fafc 80%)'
+      background: 'radial-gradient(circle at top right, #ecfdf5 0%, #f8fafc 50%, #eff6ff 100%)'
     }}>
-      <div style={{
-        background: '#ffffff',
-        width: '100%',
-        maxWidth: '500px',
-        borderRadius: 'var(--radius-lg)',
-        border: '1px solid var(--border)',
-        boxShadow: 'var(--shadow-xl)',
-        padding: '2.5rem'
-      }}>
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{
-            width: '54px',
-            height: '54px',
-            background: activeTab === 'admin' ? '#0f172a' : 'var(--primary-soft)',
-            color: activeTab === 'admin' ? '#ffffff' : 'var(--primary)',
-            borderRadius: 'var(--radius-md)',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.5rem',
-            marginBottom: '0.75rem',
-            transition: 'all 0.2s ease'
-          }}>
-            <i className={`fa-solid ${activeTab === 'admin' ? 'fa-shield-halved' : 'fa-lock'}`}></i>
-          </div>
-          <h2 style={{ fontSize: '1.6rem', marginBottom: '0.25rem' }}>
-            {activeTab === 'admin' ? 'Mess Admin Portal' : 'Sign In to MessMate'}
-          </h2>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-            {activeTab === 'admin' 
-              ? 'Enter verified administrator credentials to access the console'
-              : 'Access your meal tokens & grievance tracking'}
-          </p>
-        </div>
-
-        {/* Tab Controls */}
-        <div style={{ display: 'flex', borderBottom: '2px solid var(--border)', marginBottom: '1.5rem' }}>
-          <button
-            type="button"
-            onClick={() => handleTabChange('student')}
-            style={{
-              flex: 1,
-              padding: '0.75rem',
-              background: 'none',
-              border: 'none',
-              fontWeight: 700,
-              fontSize: '0.925rem',
-              color: activeTab === 'student' ? 'var(--primary)' : 'var(--text-muted)',
-              borderBottom: activeTab === 'student' ? '3px solid var(--primary)' : 'none',
-              cursor: 'pointer'
-            }}
-          >
-            <i className="fa-solid fa-user-graduate"></i> Student Login
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTabChange('admin')}
-            style={{
-              flex: 1,
-              padding: '0.75rem',
-              background: 'none',
-              border: 'none',
-              fontWeight: 700,
-              fontSize: '0.925rem',
-              color: activeTab === 'admin' ? '#0f172a' : 'var(--text-muted)',
-              borderBottom: activeTab === 'admin' ? '3px solid #0f172a' : 'none',
-              cursor: 'pointer'
-            }}
-          >
-            <i className="fa-solid fa-user-shield"></i> Mess Admin
-          </button>
-        </div>
-
-        {/* Success Alert Banner */}
-        {successMessage && (
-          <div style={{
-            background: '#ecfdf5',
-            border: '1px solid #a7f3d0',
-            color: '#065f46',
-            padding: '0.75rem 1rem',
-            borderRadius: 'var(--radius-md)',
-            marginBottom: '1.25rem',
-            fontSize: '0.875rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}>
-            <i className="fa-solid fa-circle-check" style={{ color: '#10b981', fontSize: '1rem', flexShrink: 0 }}></i>
-            <span>{successMessage}</span>
-          </div>
-        )}
-
-        {/* Error Alert Banner */}
-        {errorMessage && (
-          <div style={{
-            background: '#fef2f2',
-            border: '1px solid #fecaca',
-            color: '#991b1b',
-            padding: '0.75rem 1rem',
-            borderRadius: 'var(--radius-md)',
-            marginBottom: '1.25rem',
-            fontSize: '0.875rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}>
-            <i className="fa-solid fa-circle-exclamation" style={{ color: '#ef4444', fontSize: '1rem', flexShrink: 0 }}></i>
-            <span>{errorMessage}</span>
-          </div>
-        )}
-
-        {/* Interactive Admin Password Setup Modal / Panel */}
-        {showSetup && activeTab === 'admin' && (
-          <div style={{
-            background: '#f8fafc',
-            border: '2px solid #3b82f6',
-            borderRadius: 'var(--radius-md)',
-            padding: '1.5rem',
-            marginBottom: '1.75rem',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <div style={{ fontWeight: 700, fontSize: '1rem', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <i className="fa-solid fa-key" style={{ color: '#2563eb' }}></i> Configure Admin Account
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowSetup(false)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b', fontSize: '1rem' }}
-                title="Close setup"
-              >
-                <i className="fa-solid fa-xmark"></i>
-              </button>
+      {/* 2-Column Split Layout (Per Requirement 9) */}
+      <div className="auth-split-wrapper">
+        {/* LEFT: Hostel, Food & Student Life Themed Showcase */}
+        <div className="auth-hero-pane">
+          <div>
+            {/* Logo Badge */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.65rem',
+              padding: '0.45rem 0.95rem',
+              background: 'rgba(255, 255, 255, 0.18)',
+              backdropFilter: 'blur(8px)',
+              borderRadius: 'var(--radius-full)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              marginBottom: '2rem'
+            }}>
+              <i className="fa-solid fa-utensils"></i>
+              <span style={{ fontWeight: 700, fontSize: '0.9rem', letterSpacing: '0.02em' }}>MessMate Campus Portal</span>
             </div>
 
-            <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '1rem', lineHeight: '1.4' }}>
-              Set your personal secret password for <strong>{setupEmail}</strong>. Passwords are saved with Django PBKDF2 hashing and are never stored in plain text.
+            <h2 style={{ color: '#ffffff', fontSize: '2.1rem', fontWeight: 800, lineHeight: 1.2, marginBottom: '1rem', letterSpacing: '-0.02em' }}>
+              Smart Hostel Dining, Simplified.
+            </h2>
+            <p style={{ color: '#d1fae5', fontSize: '1rem', lineHeight: 1.6, marginBottom: '2.5rem' }}>
+              Your digital campus mess pass. View daily chef menus, check real-time meal timings, submit feedback, and resolve dining issues in one place.
             </p>
 
-            {setupError && (
-              <div style={{ background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca', padding: '0.5rem 0.75rem', borderRadius: '4px', fontSize: '0.8rem', marginBottom: '0.75rem' }}>
-                {setupError}
+            {/* Feature Highlights */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: 'var(--radius-md)',
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.1rem',
+                  backdropFilter: 'blur(4px)'
+                }}>
+                  <i className="fa-solid fa-fire-burner"></i>
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>Live 4-Meal Service Tracking</div>
+                  <div style={{ color: '#a7f3d0', fontSize: '0.8rem' }}>Breakfast, Lunch, Snacks & Dinner active schedules</div>
+                </div>
               </div>
-            )}
 
-            <form onSubmit={handleAdminSetupSubmit}>
-              <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-                <label className="form-label" style={{ fontSize: '0.8rem' }}>Admin Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  style={{ fontSize: '0.85rem' }}
-                  value={setupEmail}
-                  onChange={(e) => setSetupEmail(e.target.value)}
-                  required
-                />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: 'var(--radius-md)',
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.1rem',
+                  backdropFilter: 'blur(4px)'
+                }}>
+                  <i className="fa-solid fa-star"></i>
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>Chef Ratings & Reviews</div>
+                  <div style={{ color: '#a7f3d0', fontSize: '0.8rem' }}>Direct student ratings shape weekly catering menus</div>
+                </div>
               </div>
 
-              <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-                <label className="form-label" style={{ fontSize: '0.8rem' }}>Admin Username</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: 'var(--radius-md)',
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.1rem',
+                  backdropFilter: 'blur(4px)'
+                }}>
+                  <i className="fa-solid fa-clock-rotate-left"></i>
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>24-Hour SLA Grievance System</div>
+                  <div style={{ color: '#a7f3d0', fontSize: '0.8rem' }}>Hygiene, shortage, and dining support resolution</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Hostels pill */}
+          <div style={{
+            fontSize: '0.825rem',
+            color: '#a7f3d0',
+            borderTop: '1px solid rgba(255, 255, 255, 0.25)',
+            paddingTop: '1.25rem',
+            marginTop: '2rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <i className="fa-solid fa-hotel"></i>
+            <span>Serving Central Mess Halls A & B • Hostel Blocks A, B, C & D</span>
+          </div>
+        </div>
+
+        {/* RIGHT: Login Form Card */}
+        <div className="auth-form-pane">
+          <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
+            <div style={{
+              width: '56px',
+              height: '56px',
+              background: activeTab === 'admin' ? '#0f172a' : 'var(--primary-soft)',
+              color: activeTab === 'admin' ? '#ffffff' : 'var(--primary)',
+              borderRadius: 'var(--radius-lg)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '1.5rem',
+              marginBottom: '0.75rem',
+              boxShadow: 'var(--shadow-sm)'
+            }}>
+              <i className={`fa-solid ${activeTab === 'admin' ? 'fa-shield-halved' : 'fa-graduation-cap'}`}></i>
+            </div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: '0 0 0.35rem 0' }}>
+              {activeTab === 'admin' ? 'Mess Admin Portal' : 'Student Mess Login'}
+            </h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', margin: 0 }}>
+              {activeTab === 'admin'
+                ? 'Sign in with administrator credentials'
+                : 'Enter your student credentials to access your dashboard'}
+            </p>
+          </div>
+
+          {/* Student vs Admin Toggle Tabs */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            background: 'var(--bg-subtle)',
+            padding: '0.3rem',
+            borderRadius: 'var(--radius-md)',
+            marginBottom: '1.5rem',
+            border: '1px solid var(--border)'
+          }}>
+            <button
+              type="button"
+              onClick={() => handleTabChange('student')}
+              style={{
+                border: 'none',
+                background: activeTab === 'student' ? '#ffffff' : 'transparent',
+                color: activeTab === 'student' ? 'var(--primary-dark)' : 'var(--text-muted)',
+                fontWeight: activeTab === 'student' ? 700 : 500,
+                fontSize: '0.875rem',
+                padding: '0.55rem',
+                borderRadius: 'var(--radius-sm)',
+                cursor: 'pointer',
+                boxShadow: activeTab === 'student' ? 'var(--shadow-sm)' : 'none',
+                transition: 'var(--transition-fast)'
+              }}
+            >
+              <i className="fa-solid fa-user-graduate" style={{ marginRight: '0.4rem' }}></i> Student
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTabChange('admin')}
+              style={{
+                border: 'none',
+                background: activeTab === 'admin' ? '#ffffff' : 'transparent',
+                color: activeTab === 'admin' ? '#0f172a' : 'var(--text-muted)',
+                fontWeight: activeTab === 'admin' ? 700 : 500,
+                fontSize: '0.875rem',
+                padding: '0.55rem',
+                borderRadius: 'var(--radius-sm)',
+                cursor: 'pointer',
+                boxShadow: activeTab === 'admin' ? 'var(--shadow-sm)' : 'none',
+                transition: 'var(--transition-fast)'
+              }}
+            >
+              <i className="fa-solid fa-shield-halved" style={{ marginRight: '0.4rem' }}></i> Mess Admin
+            </button>
+          </div>
+
+          {/* Success / Error Banners */}
+          {successMessage && (
+            <div style={{
+              background: '#ecfdf5',
+              border: '1px solid #a7f3d0',
+              color: '#065f46',
+              padding: '0.75rem 1rem',
+              borderRadius: 'var(--radius-md)',
+              fontSize: '0.85rem',
+              marginBottom: '1.25rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              <i className="fa-solid fa-circle-check"></i>
+              <span>{successMessage}</span>
+            </div>
+          )}
+
+          {errorMessage && (
+            <div style={{
+              background: '#fee2e2',
+              border: '1px solid #fecaca',
+              color: '#b91c1c',
+              padding: '0.75rem 1rem',
+              borderRadius: 'var(--radius-md)',
+              fontSize: '0.85rem',
+              marginBottom: '1.25rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              <i className="fa-solid fa-circle-exclamation"></i>
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label className="form-label">
+                {activeTab === 'admin' ? 'Admin Email / Username' : 'Student ID / Roll Number'}
+              </label>
+              <div style={{ position: 'relative' }}>
+                <i className={`fa-solid ${activeTab === 'admin' ? 'fa-envelope' : 'fa-id-card'}`} style={{
+                  position: 'absolute',
+                  left: '1rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--text-light)'
+                }}></i>
                 <input
                   type="text"
                   className="form-control"
-                  style={{ fontSize: '0.85rem' }}
-                  value={setupUsername}
-                  onChange={(e) => setSetupUsername(e.target.value)}
+                  style={{ paddingLeft: '2.5rem' }}
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  placeholder={activeTab === 'admin' ? 'messmate.admin@gmail.com' : 'e.g. 21BCSE104'}
                   required
                 />
               </div>
+            </div>
 
-              <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-                <label className="form-label" style={{ fontSize: '0.8rem' }}>New Secret Password</label>
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <label className="form-label">Password</label>
+              <div style={{ position: 'relative' }}>
+                <i className="fa-solid fa-lock" style={{
+                  position: 'absolute',
+                  left: '1rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--text-light)'
+                }}></i>
                 <input
                   type="password"
                   className="form-control"
-                  style={{ fontSize: '0.85rem' }}
-                  placeholder="Enter your secret password"
-                  value={setupPassword}
-                  onChange={(e) => setSetupPassword(e.target.value)}
+                  style={{ paddingLeft: '2.5rem' }}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
                   required
                 />
               </div>
+            </div>
 
-              <div className="form-group" style={{ marginBottom: '1rem' }}>
-                <label className="form-label" style={{ fontSize: '0.8rem' }}>Confirm Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  style={{ fontSize: '0.85rem' }}
-                  placeholder="Re-enter secret password"
-                  value={setupConfirm}
-                  onChange={(e) => setSetupConfirm(e.target.value)}
-                  required
-                />
-              </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary btn-block"
+              style={{
+                padding: '0.75rem',
+                fontSize: '1rem',
+                background: activeTab === 'admin' ? '#0f172a' : undefined
+              }}
+            >
+              {loading ? (
+                <>
+                  <i className="fa-solid fa-spinner fa-spin"></i>
+                  <span>Authenticating...</span>
+                </>
+              ) : (
+                <>
+                  <i className="fa-solid fa-arrow-right-to-bracket"></i>
+                  <span>{activeTab === 'admin' ? 'Enter Admin Console' : 'Enter Student Dashboard'}</span>
+                </>
+              )}
+            </button>
+          </form>
 
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button
-                  type="submit"
-                  className="btn btn-primary btn-block"
-                  disabled={setupLoading}
-                  style={{ background: '#2563eb' }}
-                >
-                  {setupLoading ? 'Securing & Saving...' : 'Save & Secure Admin Password'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowSetup(false)}
-                  className="btn btn-outline"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {/* Regular Login Form */}
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label">
-              {activeTab === 'student' ? 'Student ID / Roll Number' : 'Admin Email or Username'}
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              value={identifier}
-              placeholder={activeTab === 'student' ? 'e.g. 21BCSE104' : 'messmate.admin@gmail.com or admin'}
-              onChange={(e) => setIdentifier(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-              <label className="form-label" style={{ marginBottom: 0 }}>Password</label>
-              {activeTab === 'admin' && (
-                <button
-                  type="button"
-                  onClick={() => { setShowSetup(!showSetup); setSetupError(''); }}
+          {/* Student "Create Account" Section (Per Requirement 9) */}
+          {activeTab === 'student' && (
+            <div style={{
+              textAlign: 'center',
+              marginTop: '1.5rem',
+              paddingTop: '1.25rem',
+              borderTop: '1px solid var(--border)'
+            }}>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', margin: 0 }}>
+                Don't have an account?{' '}
+                <Link
+                  to="/register"
                   style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#2563eb',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    padding: 0
+                    color: 'var(--primary)',
+                    fontWeight: 700,
+                    textDecoration: 'none'
                   }}
                 >
-                  <i className="fa-solid fa-gear"></i> {showSetup ? 'Hide Setup' : 'Set / Update Admin Password'}
-                </button>
+                  Create Account
+                </Link>
+              </p>
+            </div>
+          )}
+
+          {/* Admin Setup Dropdown */}
+          {activeTab === 'admin' && (
+            <div style={{
+              marginTop: '1.25rem',
+              paddingTop: '1rem',
+              borderTop: '1px solid var(--border)',
+              textAlign: 'center'
+            }}>
+              <button
+                type="button"
+                onClick={() => setShowSetup(!showSetup)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-muted)',
+                  fontSize: '0.8rem',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  textDecoration: 'underline'
+                }}
+              >
+                <i className="fa-solid fa-key"></i>
+                <span>{showSetup ? 'Hide Admin Password Setup' : 'Set / Update Admin Password'}</span>
+              </button>
+
+              {showSetup && (
+                <form onSubmit={handleAdminSetupSubmit} style={{ marginTop: '1rem', textAlign: 'left', background: 'var(--bg-subtle)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dark)', marginBottom: '0.5rem' }}>
+                    Configure Administrator Credentials
+                  </div>
+
+                  {setupError && (
+                    <div style={{ color: 'var(--danger)', fontSize: '0.75rem', marginBottom: '0.5rem' }}>
+                      {setupError}
+                    </div>
+                  )}
+
+                  <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+                    <label className="form-label" style={{ fontSize: '0.75rem' }}>Admin Email</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      style={{ fontSize: '0.8rem', padding: '0.45rem 0.75rem' }}
+                      value={setupEmail}
+                      onChange={(e) => setSetupEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+                    <label className="form-label" style={{ fontSize: '0.75rem' }}>New Password</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      style={{ fontSize: '0.8rem', padding: '0.45rem 0.75rem' }}
+                      value={setupPassword}
+                      onChange={(e) => setSetupPassword(e.target.value)}
+                      placeholder="Min 4 characters"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+                    <label className="form-label" style={{ fontSize: '0.75rem' }}>Confirm Password</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      style={{ fontSize: '0.8rem', padding: '0.45rem 0.75rem' }}
+                      value={setupConfirm}
+                      onChange={(e) => setSetupConfirm(e.target.value)}
+                      placeholder="Repeat password"
+                      required
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={setupLoading}
+                    className="btn btn-outline btn-sm btn-block"
+                    style={{ fontSize: '0.8rem' }}
+                  >
+                    {setupLoading ? 'Saving...' : 'Save & Set Password'}
+                  </button>
+                </form>
               )}
             </div>
-            <input
-              type="password"
-              className="form-control"
-              value={password}
-              placeholder={activeTab === 'student' ? '••••••••' : 'Enter your admin password'}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="btn btn-primary btn-block btn-lg"
-            disabled={loading}
-            style={{ marginTop: '1.25rem', background: activeTab === 'admin' ? '#0f172a' : 'var(--primary)' }}
-          >
-            {loading ? 'Authenticating...' : (
-              activeTab === 'student' ? 'Enter Student Dashboard' : 'Access Mess Admin Panel'
-            )}
-          </button>
-        </form>
-
-        {/* Quick Demo Info Box */}
-        <div style={{
-          background: '#f8fafc',
-          border: '1px dashed #cbd5e1',
-          borderRadius: 'var(--radius-md)',
-          padding: '1rem',
-          marginTop: '1.5rem',
-          fontSize: '0.825rem'
-        }}>
-          <div style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-            <i className="fa-solid fa-circle-info" style={{ color: 'var(--primary)' }}></i> Sign In Information
-          </div>
-          <div style={{ color: 'var(--text-muted)', marginTop: '0.35rem', lineHeight: '1.5' }}>
-            <div><strong>Student Demo:</strong> <code>21BCSE104</code> / <code>student123</code></div>
-            <div style={{ marginTop: '0.35rem' }}>
-              <strong>Mess Admin:</strong> Email <code>messmate.admin@gmail.com</code> (or username <code>admin</code>).
-              <div style={{ marginTop: '0.2rem', fontSize: '0.78rem' }}>
-                Use the <strong>"Set / Update Admin Password"</strong> link above to set your secret password, or run:
-                <br />
-                <code style={{ fontSize: '0.75rem', background: '#e2e8f0', padding: '0.1rem 0.35rem', borderRadius: '3px' }}>
-                  python manage.py setup_admin --email messmate.admin@gmail.com
-                </code>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

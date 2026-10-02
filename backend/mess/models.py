@@ -6,6 +6,8 @@ class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile', null=True, blank=True)
     name = models.CharField(max_length=100)
     roll_number = models.CharField(max_length=50, unique=True)
+    email = models.EmailField(max_length=255, blank=True, null=True)
+    phone_number = models.CharField(max_length=20, blank=True, default='')
     hostel_block = models.CharField(max_length=50, default='Block B')
     room_number = models.CharField(max_length=50, default='B-304')
     mess_card_id = models.CharField(max_length=50, unique=True)
