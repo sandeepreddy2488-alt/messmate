@@ -19,7 +19,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: https://sandeepreddy2488-alt.github.io/messmate/
+      url: https://messmate-77b77.web.app
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
